@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 using Platformer.Core;
 
+using System.Collections.Generic;
+
 namespace Platformer
 {
     /// <summary>
@@ -11,13 +13,16 @@ namespace Platformer
     /// </summary>
     public class Game1 : Game
     {
-        public const int WINDOW_WIDTH = 256;
-        public const int WINDOW_HEIGHT = 256;
+        public const int WINDOW_WIDTH = 1080;
+        public const int WINDOW_HEIGHT = 720;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         Texture2D playerTexture;
+        Texture2D blocTexture;
+
+        List<GameObject> solidBlocList;
 
         Player player;        
         public Game1()
@@ -38,7 +43,12 @@ namespace Platformer
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            player = new Player(100, 100, 60);
+            player = new Player(300, 100, 60, 100);
+
+            solidBlocList = new List<GameObject>();
+            solidBlocList.Add(new GameObject(128, 256));
+            solidBlocList.Add(new GameObject(256, 384));
+            solidBlocList.Add(new GameObject(384, 384));
             base.Initialize();
 
         }
@@ -55,6 +65,13 @@ namespace Platformer
             // TODO: use this.Content to load your game content here
             playerTexture = Content.Load<Texture2D>("images/perso");
             player.Texture = playerTexture;
+
+            blocTexture = Content.Load<Texture2D>("images/bloc");
+
+            for (int i = 0; i < solidBlocList.Count; i++)
+            {
+                solidBlocList[i].Texture = blocTexture;
+            }
         }
 
         /// <summary>
@@ -77,8 +94,8 @@ namespace Platformer
                 Exit();
 
             // TODO: Add your update logic here
-            player.Move(Keyboard.GetState());
-            player.Update(gameTime);
+            player.DetectMove(Keyboard.GetState());
+            player.Update(gameTime, solidBlocList);
             base.Update(gameTime);
         }
 
@@ -93,8 +110,12 @@ namespace Platformer
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             player.Draw(spriteBatch);
-            //spriteBatch.Draw(playerTexture, new Vector2(0, 0), Color.White);
+            for(int i = 0; i < solidBlocList.Count; i++)
+            {
+                solidBlocList[i].Draw(spriteBatch);
+            }
             spriteBatch.End();
+
 
             base.Draw(gameTime);
         }

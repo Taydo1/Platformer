@@ -1,46 +1,63 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using System.Collections.Generic;
 
 namespace Platformer.Core
 {
     class Player : MobileGameObject
     {
-        public Player(float x, float y, float objectMass) :
-            base(x, y, objectMass)
-        {
+        protected float direction;
 
+        private const float playerSpeed = 100000;
+
+        public Player(float x, float y, float objectMass, float objectMaxSpeed) :
+            base(x, y, objectMass, objectMaxSpeed, true)
+        {
+            direction = 0;
         }
 
-        public new void Update(GameTime gameTime)
+        public new void Update(GameTime gameTime, List<GameObject> solidObjectList)
         {
-            base.Update(gameTime);
-            ApplyForce(0, mass * gravity);
+            base.Update(gameTime, solidObjectList);
+            //ApplyForce(0, mass * gravity);
 
-            if(Bottom > Platformer.Game1.WINDOW_HEIGHT)
+            if(direction == 1)
             {
-                ApplyForce(0, -mass * gravity);
-                speed.Y = 0;
+                speed.X = playerSpeed;
+            }
+            else if(direction == -1)
+            {
+                speed.X = -playerSpeed;
+            }
+            else
+            {
+                speed.X = 0;
             }
         }
 
-        public void Move(KeyboardState state)
+        public void DetectMove(KeyboardState state)
         {
             if (state.IsKeyDown(Keys.Up))
             {
                 speed.Y = -100;
             }
-            if (state.IsKeyDown(Keys.Left))
-            {
-                position.X -= 1;
-            }
             if (state.IsKeyDown(Keys.Down))
             {
-                position.Y += 1;
+                
             }
-            if (state.IsKeyDown(Keys.Right))
+
+            if (state.IsKeyDown(Keys.Left) == state.IsKeyDown(Keys.Right))
             {
-                position.X += 1;
+                direction = 0;
+            }
+            else if (state.IsKeyDown(Keys.Left))
+            {
+                direction = -1;
+            }
+            else if (state.IsKeyDown(Keys.Right))
+            {
+                direction = 1;
             }
         }
     }
