@@ -5,9 +5,6 @@ namespace Platformer.Core
 {
     class GameObject
     {
-        public const int WINDOW_WIDTH = Platformer.Game1.WINDOW_WIDTH;
-        public const int WINDOW_HEIGHT = Platformer.Game1.WINDOW_HEIGHT;
-
         protected Vector2 position;
         protected Vector2 size;
         protected Texture2D texture;
@@ -36,6 +33,13 @@ namespace Platformer.Core
             }
         }
 
+        public float DistanceCarre(GameObject element)
+        {
+            Vector2 pos1 = Center,
+                pos2 = element.Center;
+            return (pos1.X - pos2.X) * (pos1.X - pos2.X) + (pos1.Y - pos2.Y) * (pos1.Y - pos2.Y);
+        }
+
         public float Top
         {
             get { return position.Y; }
@@ -56,7 +60,17 @@ namespace Platformer.Core
             get { return position.X + size.X; }
             protected set { position.X = value - size.X; }
         }
-
+        public float CenterHori
+        {
+            get { return position.X + size.X/2; }
+            protected set { position.X = value - size.X/2; }
+        }
+        public float CenterVert
+        {
+            get { return position.Y + size.Y / 2; }
+            protected set { position.Y = value - size.Y / 2; }
+        }
+        
         public Vector2 TopLeft
         {
             get { return new Vector2(Left, Top); }
@@ -72,6 +86,10 @@ namespace Platformer.Core
         public Vector2 BottomRight
         {
             get { return new Vector2(Right, Bottom); }
+        }
+        public Vector2 Center
+        {
+            get { return new Vector2(CenterHori, CenterVert); }
         }
 
         protected void Print(string text)

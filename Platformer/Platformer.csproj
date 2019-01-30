@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\GameObject.cs" />
     <Compile Include="Core\MobileGameObject.cs" />
     <Compile Include="Core\Player.cs" />

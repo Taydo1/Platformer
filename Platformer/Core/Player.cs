@@ -9,7 +9,7 @@ namespace Platformer.Core
     {
         protected float direction;
 
-        private const float playerSpeed = 100000;
+        private const float playerSpeed = 100;
 
         public Player(float x, float y, float objectMass, float objectMaxSpeed) :
             base(x, y, objectMass, objectMaxSpeed, true)
@@ -44,7 +44,10 @@ namespace Platformer.Core
             }
             if (state.IsKeyDown(Keys.Down))
             {
-                
+                if (speed.Y < 0)
+                {
+                    speed.Y = 0;
+                }
             }
 
             if (state.IsKeyDown(Keys.Left) == state.IsKeyDown(Keys.Right))

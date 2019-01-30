@@ -61,19 +61,26 @@ namespace Platformer.Core
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
         {
             float maxMultUntilCollision = 1f,
-                nouveauMult;
+                nouveauMult, 
+                distanceMaxCarre = (float)Math.Pow(speed.Length() + 2*Constants.TailleCase, 2);
 
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                nouveauMult = MultUntilCollision(solidObjectList[i], movement);
-                maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
+                if (DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                {
+                    nouveauMult = MultUntilCollision(solidObjectList[i], movement);
+                    maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
+                }
             }
             position += maxMultUntilCollision * movement;
 
             collideSides = 0;
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                DetectCollideSide(solidObjectList[i]);
+                if (DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                {
+                    DetectCollideSide(solidObjectList[i]);
+                }
             }
         }
 

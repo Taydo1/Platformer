@@ -13,8 +13,6 @@ namespace Platformer
     /// </summary>
     public class Game1 : Game
     {
-        public const int WINDOW_WIDTH = 1080;
-        public const int WINDOW_HEIGHT = 720;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -30,8 +28,8 @@ namespace Platformer
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
-            graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            graphics.PreferredBackBufferWidth = Constants.WindowWidth;
+            graphics.PreferredBackBufferHeight = Constants.WindowHeight;
         }
 
         /// <summary>
@@ -96,6 +94,7 @@ namespace Platformer
             // TODO: Add your update logic here
             player.DetectMove(Keyboard.GetState());
             player.Update(gameTime, solidBlocList);
+
             base.Update(gameTime);
         }
 
