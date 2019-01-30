@@ -8,9 +8,13 @@ namespace Platformer.Core
 {
     public static class Constants
     {
-        public const int WindowWidth = 1080;
-        public const int WindowHeight = 720;
+        public const int TileSize = 64;
+        public const int TextureSize = 128;
 
-        public const float TailleCase = 128;
+        public const int WindowHoriTileNum = 5;
+        public const int WindowVertTileNum = 8;
+
+        public const int WindowWidth = WindowHoriTileNum * TileSize;
+        public const int WindowHeight = WindowVertTileNum * TileSize;
     }
 }

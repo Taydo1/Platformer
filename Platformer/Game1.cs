@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Platformer.Core;
 
 using System.Collections.Generic;
+using System;
 
 namespace Platformer
 {
@@ -19,6 +20,7 @@ namespace Platformer
 
         Texture2D playerTexture;
         Texture2D blockTexture;
+        static Texture2D lineTexture;
 
         List<GameObject> map;
 
@@ -41,12 +43,16 @@ namespace Platformer
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            player = new Player(300, 100, 60, 100);
+            player = new Player(1f, -1f, 60, 100);
 
             map = new List<GameObject>();
-            map.Add(new GameObject(128, 256, true));
-            map.Add(new GameObject(256, 384, true));
-            map.Add(new GameObject(384, 384, false));
+            map.Add(new GameObject(1, 1, true));
+            map.Add(new GameObject(1, 3, true));
+            map.Add(new GameObject(1, 5, true));
+            map.Add(new GameObject(2, 7, true));
+            map.Add(new GameObject(3, 2, true));
+            map.Add(new GameObject(3, 4, true));
+            map.Add(new GameObject(3, 6, true));
             base.Initialize();
 
         }
@@ -65,6 +71,7 @@ namespace Platformer
             player.Texture = playerTexture;
 
             blockTexture = Content.Load<Texture2D>("images/block");
+            lineTexture = Content.Load<Texture2D>("images/line");
 
             for (int i = 0; i < map.Count; i++)
             {
@@ -117,6 +124,30 @@ namespace Platformer
 
 
             base.Draw(gameTime);
+        }
+
+        public static void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end)
+        {
+
+            Vector2 edge = end - start;
+            // calculate angle to rotate line
+            float angle =
+                (float)Math.Atan2(edge.Y, edge.X);
+
+
+            sb.Draw(lineTexture,
+                new Rectangle(// rectangle defines shape of line and position of start of line
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
+                    1), //width of line, change this to make thicker line
+                null,
+                Color.Red, //colour of line
+                angle,     //angle of line (calulated above)
+                new Vector2(0, 0), // point in line about which to rotate
+                SpriteEffects.None,
+                0);
+
         }
     }
 }

@@ -9,7 +9,8 @@ namespace Platformer.Core
     {
         protected float direction;
 
-        private const float playerSpeed = 100;
+        private const float playerSpeed = 5f * Constants.TileSize / 128f;
+        private const float playerJump = -15f * Constants.TileSize / 128f;
 
         public Player(float x, float y, float objectMass, float objectMaxSpeed) :
             base(x, y, objectMass, objectMaxSpeed, true, true)
@@ -38,9 +39,9 @@ namespace Platformer.Core
 
         public void DetectMove(KeyboardState state)
         {
-            if (state.IsKeyDown(Keys.Up)/* && (collideSides&2) !=0*/)
+            if (state.IsKeyDown(Keys.Up) && ( (collideSides&1) !=0 || (collideSides & 2) != 0 || (collideSides & 4) != 0))
             {
-                speed.Y = -100;
+                speed.Y = playerJump;
             }
             if (state.IsKeyDown(Keys.Down))
             {

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using System;
+
 namespace Platformer.Core
 {
     class GameObject
@@ -9,6 +11,7 @@ namespace Platformer.Core
         protected Vector2 size;
         protected Texture2D texture;
         protected bool isSolid;
+
 
         public GameObject(float x, float y, bool isObjectSolid)
         {
@@ -20,8 +23,13 @@ namespace Platformer.Core
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, Color.White);
-            //System.Console.WriteLine(position.X + " " + position.Y);
+            spriteBatch.Draw(texture, position * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize/Constants.TextureSize, SpriteEffects.None, 0);
+
+
+            //Game1.DrawLine(spriteBatch, TopLeft * Constants.TileSize, TopRight * Constants.TileSize);
+            //Game1.DrawLine(spriteBatch, TopRight * Constants.TileSize, BottomRight * Constants.TileSize);
+            //Game1.DrawLine(spriteBatch, BottomRight * Constants.TileSize, BottomLeft * Constants.TileSize);
+            //Game1.DrawLine(spriteBatch, BottomLeft * Constants.TileSize, TopLeft * Constants.TileSize);
         }
 
 
@@ -31,7 +39,7 @@ namespace Platformer.Core
             set
             {
                 texture = value;
-                size = new Vector2(texture.Width, texture.Height);
+                size = new Vector2((float)texture.Width / Constants.TextureSize, (float)texture.Height / Constants.TextureSize);
             }
         }
 
@@ -94,6 +102,11 @@ namespace Platformer.Core
             get { return new Vector2(CenterHori, CenterVert); }
         }
 
+        public float DiagonalLength
+        {
+            get { return (float)Math.Pow(size.X/2 + size.Y/2, 2); }
+        }
+
         public bool IsSolid {
             get => isSolid;
         }
@@ -102,5 +115,7 @@ namespace Platformer.Core
         {
             System.Console.WriteLine(text);
         }
+
+        
     }
 }

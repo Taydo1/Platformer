@@ -7,7 +7,7 @@ namespace Platformer.Core
 {
     class MobileGameObject : GameObject
     {
-        public const float gravity = 100f;
+        public const float gravity = 10f;
 
         protected Vector2 speed;
         private Vector2 acceleration;
@@ -53,20 +53,21 @@ namespace Platformer.Core
             StopOnCollision();
 
             Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, solidObjectList);
-            Print("acceleration :" + acceleration.ToString());
-            Print("speed :" + speed.ToString());
-            Print("position :" + position.ToString());
+            //Print("side :" + collideSides);
+            //Print("acceleration :" + acceleration.ToString());
+            //Print("speed :" + speed.ToString());
+            //Print("position :" + position.ToString());
         }
 
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
         {
             float maxMultUntilCollision = 1f,
-                nouveauMult, 
-                distanceMaxCarre = (float)Math.Pow(speed.Length() + 2*Constants.TailleCase, 2);
+                nouveauMult,
+                speedLength = speed.Length();
 
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(speedLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
                 {
                     nouveauMult = MultUntilCollision(solidObjectList[i], movement);
                     maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
@@ -77,7 +78,7 @@ namespace Platformer.Core
             collideSides = 0;
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(speedLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
                 {
                     DetectCollideSide(solidObjectList[i]);
                 }
@@ -144,7 +145,10 @@ namespace Platformer.Core
         private bool CollisionSegSeg(Vector2 A, Vector2 B, Vector2 O, Vector2 P)
         {
             if (CollisionLineSeg(A, B, O, P) == false)
+            {
                 return false;  // inutile d'aller plus loin si le segment [OP] ne touche pas la droite (AB) 
+            }
+
             Vector2 AB = Vector2.Zero,
                 OP = Vector2.Zero;
             AB.X = B.X - A.X;
@@ -152,6 +156,7 @@ namespace Platformer.Core
             OP.X = P.X - O.X;
             OP.Y = P.Y - O.Y;
             float k = -(A.X * OP.Y - O.X * OP.Y - OP.X * A.Y + OP.X * O.Y) / (AB.X * OP.Y - AB.Y * OP.X);
+
             if (k < 0 || k > 1)
                 return false;
             else
@@ -201,12 +206,15 @@ namespace Platformer.Core
 
         private void DetectCollideSide(GameObject element)
         {
-            if (!((element.Left >= this.Right + 0.01) || (element.Right <= this.Left - 0.01) || (element.Top >= this.Bottom + 0.01) || (element.Bottom <= this.Top - 0.01))) {
+            float offset = 0.01f;
+
+            if (!((element.Left >= this.Right + offset) || (element.Right <= this.Left - offset) || (element.Top >= this.Bottom + offset) || (element.Bottom <= this.Top - offset))) {
 
                 float t_collision = element.Bottom - Top;
                 float b_collision = Bottom - element.Top;
                 float r_collision = Right - element.Left;
                 float l_collision = element.Right - Left;
+                
 
                 if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
                 {
@@ -230,5 +238,7 @@ namespace Platformer.Core
                 }
             }
         }
+
+        
     }
 }
