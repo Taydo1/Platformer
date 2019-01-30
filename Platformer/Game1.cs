@@ -22,6 +22,8 @@ namespace Platformer
         Texture2D blockTexture;
         static Texture2D lineTexture;
 
+
+
         List<GameObject> map;
 
         Player player;        
@@ -43,16 +45,33 @@ namespace Platformer
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            player = new Player(1f, -1f, 60, 100);
 
             map = new List<GameObject>();
-            map.Add(new GameObject(1, 1, true));
-            map.Add(new GameObject(1, 3, true));
-            map.Add(new GameObject(1, 5, true));
-            map.Add(new GameObject(2, 7, true));
-            map.Add(new GameObject(3, 2, true));
-            map.Add(new GameObject(3, 4, true));
-            map.Add(new GameObject(3, 6, true));
+            string levelFile = System.IO.File.ReadAllText("Content/levels/level1.txt");
+
+            string[] levelTemp = levelFile.Split('\n');
+            string[][] level = new string[levelTemp.Length][];
+            for(int i=0;i < levelTemp.Length;i++)
+            {
+                level[i] = levelTemp[i].Split();
+                for(int j = 0; j < level[i].Length; j++)
+                {
+                    switch (level[i][j])
+                    {
+                        case "-1":
+                            player = new Player(j, i, 60, 100);
+                            break;
+                        case "1":
+                            map.Add(new GameObject(j, i, true));
+                            break;
+                    }
+                    System.Console.Write(level[i][j] + "  ");
+                }
+                System.Console.WriteLine();
+
+            }
+            System.Console.WriteLine(""+level);
+
             base.Initialize();
 
         }
@@ -70,13 +89,15 @@ namespace Platformer
             playerTexture = Content.Load<Texture2D>("images/perso");
             player.Texture = playerTexture;
 
-            blockTexture = Content.Load<Texture2D>("images/block");
             lineTexture = Content.Load<Texture2D>("images/line");
 
+            blockTexture = Content.Load<Texture2D>("images/block");
             for (int i = 0; i < map.Count; i++)
             {
                 map[i].Texture = blockTexture;
             }
+
+
         }
 
         /// <summary>

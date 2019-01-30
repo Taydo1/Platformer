@@ -53,10 +53,10 @@ namespace Platformer.Core
             StopOnCollision();
 
             Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, solidObjectList);
-            //Print("side :" + collideSides);
-            //Print("acceleration :" + acceleration.ToString());
-            //Print("speed :" + speed.ToString());
-            //Print("position :" + position.ToString());
+            Print("side :" + collideSides);
+            Print("acceleration :" + acceleration.ToString());
+            Print("speed :" + speed.ToString());
+            Print("position :" + position.ToString());
         }
 
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
@@ -206,7 +206,7 @@ namespace Platformer.Core
 
         private void DetectCollideSide(GameObject element)
         {
-            float offset = 0.01f;
+            float offset = 0.001f;
 
             if (!((element.Left >= this.Right + offset) || (element.Right <= this.Left - offset) || (element.Top >= this.Bottom + offset) || (element.Bottom <= this.Top - offset))) {
 
