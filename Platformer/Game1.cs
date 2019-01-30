@@ -18,9 +18,9 @@ namespace Platformer
         SpriteBatch spriteBatch;
 
         Texture2D playerTexture;
-        Texture2D blocTexture;
+        Texture2D blockTexture;
 
-        List<GameObject> solidBlocList;
+        List<GameObject> map;
 
         Player player;        
         public Game1()
@@ -43,10 +43,10 @@ namespace Platformer
             // TODO: Add your initialization logic here
             player = new Player(300, 100, 60, 100);
 
-            solidBlocList = new List<GameObject>();
-            solidBlocList.Add(new GameObject(128, 256));
-            solidBlocList.Add(new GameObject(256, 384));
-            solidBlocList.Add(new GameObject(384, 384));
+            map = new List<GameObject>();
+            map.Add(new GameObject(128, 256, true));
+            map.Add(new GameObject(256, 384, true));
+            map.Add(new GameObject(384, 384, false));
             base.Initialize();
 
         }
@@ -64,11 +64,11 @@ namespace Platformer
             playerTexture = Content.Load<Texture2D>("images/perso");
             player.Texture = playerTexture;
 
-            blocTexture = Content.Load<Texture2D>("images/bloc");
+            blockTexture = Content.Load<Texture2D>("images/block");
 
-            for (int i = 0; i < solidBlocList.Count; i++)
+            for (int i = 0; i < map.Count; i++)
             {
-                solidBlocList[i].Texture = blocTexture;
+                map[i].Texture = blockTexture;
             }
         }
 
@@ -93,7 +93,7 @@ namespace Platformer
 
             // TODO: Add your update logic here
             player.DetectMove(Keyboard.GetState());
-            player.Update(gameTime, solidBlocList);
+            player.Update(gameTime, map);
 
             base.Update(gameTime);
         }
@@ -109,9 +109,9 @@ namespace Platformer
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             player.Draw(spriteBatch);
-            for(int i = 0; i < solidBlocList.Count; i++)
+            for(int i = 0; i < map.Count; i++)
             {
-                solidBlocList[i].Draw(spriteBatch);
+                map[i].Draw(spriteBatch);
             }
             spriteBatch.End();
 

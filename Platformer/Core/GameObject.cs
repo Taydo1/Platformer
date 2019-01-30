@@ -8,10 +8,12 @@ namespace Platformer.Core
         protected Vector2 position;
         protected Vector2 size;
         protected Texture2D texture;
+        protected bool isSolid;
 
-        public GameObject(float x, float y)
+        public GameObject(float x, float y, bool isObjectSolid)
         {
             position = new Vector2(x, y);
+            isSolid = isObjectSolid;
             texture = null;
             size = Vector2.Zero;
         }
@@ -90,6 +92,10 @@ namespace Platformer.Core
         public Vector2 Center
         {
             get { return new Vector2(CenterHori, CenterVert); }
+        }
+
+        public bool IsSolid {
+            get => isSolid;
         }
 
         protected void Print(string text)

@@ -20,8 +20,8 @@ namespace Platformer.Core
         protected bool applyGravity;
 
 
-        public MobileGameObject(float x, float y, float objectMass, float objectMaxSpeed, bool applyGravityState) :
-            base(x, y)
+        public MobileGameObject(float x, float y, float objectMass, float objectMaxSpeed, bool applyGravityState, bool isObjectSolid) :
+            base(x, y, isObjectSolid)
         {
             collideSides = 0;
 
@@ -66,7 +66,7 @@ namespace Platformer.Core
 
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
                 {
                     nouveauMult = MultUntilCollision(solidObjectList[i], movement);
                     maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
@@ -77,7 +77,7 @@ namespace Platformer.Core
             collideSides = 0;
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < distanceMaxCarre)
                 {
                     DetectCollideSide(solidObjectList[i]);
                 }
@@ -158,7 +158,7 @@ namespace Platformer.Core
                 return true;
         }
 
-        protected bool Colision(GameObject element, Vector2 movement)
+        /*protected bool Colision(GameObject element, Vector2 movement)
         {
             if ((element.Left >= this.Right + movement.X)      // trop à droite
     || (element.Right <= this.Left + movement.X) // trop à gauche
@@ -169,7 +169,7 @@ namespace Platformer.Core
             {
                 return true;
             }
-        }
+        }*/
 
         protected float MultUntilCollision(GameObject element, Vector2 movement)
         {
