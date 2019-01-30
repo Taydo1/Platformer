@@ -9,8 +9,8 @@ namespace Platformer.Core
     {
         protected float direction;
 
-        private const float playerSpeed = 5f * Constants.TileSize / 128f;
-        private const float playerJump = -15f * Constants.TileSize / 128f;
+        private const float playerSpeed = 3f;
+        private const float playerJump = -7.9f;
 
         public Player(float x, float y, float objectMass, float objectMaxSpeed) :
             base(x, y, objectMass, objectMaxSpeed, true, true)
