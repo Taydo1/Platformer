@@ -120,6 +120,10 @@ namespace Platformer
             player.DetectMove(Keyboard.GetState());
             player.Update(gameTime, map, ref shift);
 
+            if (shift.Y < Constants.WindowVertTileNum - mapSize.Y)
+            {
+                shift.Y = Constants.WindowVertTileNum - mapSize.Y;
+            }
 
 
             base.Update(gameTime);
