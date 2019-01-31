@@ -42,10 +42,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Core\Bloc.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\GameObject.cs" />
     <Compile Include="Core\MobileGameObject.cs" />
     <Compile Include="Core\Player.cs" />
+    <Compile Include="Core\Sky.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

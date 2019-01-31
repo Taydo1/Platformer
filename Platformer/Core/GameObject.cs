@@ -23,6 +23,7 @@ namespace Platformer.Core
 
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
+            Print("\n\n"+position + " "+ texture +" " + this.GetType());
             spriteBatch.Draw(texture, (position+shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize/Constants.TextureSize, SpriteEffects.None, 0);
 
 

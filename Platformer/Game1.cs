@@ -20,6 +20,7 @@ namespace Platformer
 
         Texture2D playerTexture;
         Texture2D blockTexture;
+        Texture2D skyTexture;
         static Texture2D lineTexture;
 
         Vector2 mapSize = Vector2.Zero;
@@ -33,21 +34,12 @@ namespace Platformer
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            /*Constants.WindowWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            Constants.WindowHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            Constants.WindowHoriTileNum = Constants.WindowWidth / Constants.TileSize;
-            Constants.WindowVertTileNum = Constants.WindowHeight / Constants.TileSize;*/
 
             graphics.PreferredBackBufferWidth = Constants.WindowWidth;
             graphics.PreferredBackBufferHeight = Constants.WindowHeight;
 
             Window.AllowUserResizing = true;
-            Window.ClientSizeChanged += new EventHandler<EventArgs>(this.resizeWindow);
-
-            Console.WriteLine("" + Constants.WindowWidth);
-            Console.WriteLine("" + Constants.WindowHeight);
-            Console.WriteLine("" + Constants.WindowHoriTileNum);
-            Console.WriteLine("" + Constants.WindowVertTileNum);
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(this.ResizeWindow);
 
             /*graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -65,7 +57,8 @@ namespace Platformer
             // TODO: Add your initialization logic here
 
             shift = Vector2.Zero;
-            loadLevel(1);
+
+            LoadLevel(1);
 
             base.Initialize();
 
@@ -81,15 +74,17 @@ namespace Platformer
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
             playerTexture = Content.Load<Texture2D>("images/perso");
-            player.Texture = playerTexture;
-
             lineTexture = Content.Load<Texture2D>("images/line");
-
             blockTexture = Content.Load<Texture2D>("images/block");
+            skyTexture = Content.Load<Texture2D>("images/sky");
+
+            player.Texture = playerTexture;
             for (int i = 0; i < map.Count; i++)
             {
-                map[i].Texture = blockTexture;
+                if(map[i] is Bloc) { map[i].Texture = blockTexture; }
+                else if(map[i] is Sky) { map[i].Texture = skyTexture; }
             }
 
 
@@ -139,11 +134,11 @@ namespace Platformer
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player.Draw(spriteBatch, shift);
             for(int i = 0; i < map.Count; i++)
             {
                 map[i].Draw(spriteBatch, shift);
             }
+            player.Draw(spriteBatch, shift);
             spriteBatch.End();
 
 
@@ -174,7 +169,7 @@ namespace Platformer
 
         }
 
-        public void loadLevel(int levelNumber)
+        public void LoadLevel(int levelNumber)
         {
             mapSize = Vector2.Zero;
 
@@ -188,13 +183,18 @@ namespace Platformer
                 level[i] = levelTemp[i].Split();
                 for (int j = 0; j < level[i].Length; j++)
                 {
+
                     switch (level[i][j])
                     {
                         case "-1":
                             player = new Player(j, i, 60, 100);
+                            map.Add(new Sky(j, i));
+                            break;
+                        case "0":
+                            map.Add(new Sky(j, i));
                             break;
                         case "1":
-                            map.Add(new GameObject(j, i, true));
+                            map.Add(new Bloc(j, i));
                             break;
                     }
                     System.Console.Write(level[i][j] + "  ");
@@ -204,12 +204,10 @@ namespace Platformer
                 System.Console.WriteLine();
 
             }
-            System.Console.WriteLine("" + level);
             mapSize.Y = levelTemp.Length;
-            System.Console.WriteLine("" + mapSize);
         }
 
-        public void resizeWindow(object sender, EventArgs e)
+        public void ResizeWindow(object sender, EventArgs e)
         {
             Constants.WindowWidth = GraphicsDevice.Viewport.Width;
             Constants.WindowHeight = GraphicsDevice.Viewport.Height;
