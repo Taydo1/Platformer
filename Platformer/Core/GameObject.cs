@@ -21,9 +21,9 @@ namespace Platformer.Core
             size = Vector2.Zero;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
-            spriteBatch.Draw(texture, position * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize/Constants.TextureSize, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, (position+shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize/Constants.TextureSize, SpriteEffects.None, 0);
 
 
             //Game1.DrawLine(spriteBatch, TopLeft * Constants.TileSize, TopRight * Constants.TileSize);

@@ -22,7 +22,8 @@ namespace Platformer
         Texture2D blockTexture;
         static Texture2D lineTexture;
 
-
+        Vector2 mapSize = Vector2.Zero;
+        Vector2 shift;
 
         List<GameObject> map;
 
@@ -32,8 +33,25 @@ namespace Platformer
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            /*Constants.WindowWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            Constants.WindowHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            Constants.WindowHoriTileNum = Constants.WindowWidth / Constants.TileSize;
+            Constants.WindowVertTileNum = Constants.WindowHeight / Constants.TileSize;*/
+
             graphics.PreferredBackBufferWidth = Constants.WindowWidth;
             graphics.PreferredBackBufferHeight = Constants.WindowHeight;
+
+            Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(this.resizeWindow);
+
+            Console.WriteLine("" + Constants.WindowWidth);
+            Console.WriteLine("" + Constants.WindowHeight);
+            Console.WriteLine("" + Constants.WindowHoriTileNum);
+            Console.WriteLine("" + Constants.WindowVertTileNum);
+
+            /*graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.IsFullScreen = true;*/
         }
 
         /// <summary>
@@ -46,31 +64,8 @@ namespace Platformer
         {
             // TODO: Add your initialization logic here
 
-            map = new List<GameObject>();
-            string levelFile = System.IO.File.ReadAllText("Content/levels/level1.txt");
-
-            string[] levelTemp = levelFile.Split('\n');
-            string[][] level = new string[levelTemp.Length][];
-            for(int i=0;i < levelTemp.Length;i++)
-            {
-                level[i] = levelTemp[i].Split();
-                for(int j = 0; j < level[i].Length; j++)
-                {
-                    switch (level[i][j])
-                    {
-                        case "-1":
-                            player = new Player(j, i, 60, 100);
-                            break;
-                        case "1":
-                            map.Add(new GameObject(j, i, true));
-                            break;
-                    }
-                    System.Console.Write(level[i][j] + "  ");
-                }
-                System.Console.WriteLine();
-
-            }
-            System.Console.WriteLine(""+level);
+            shift = Vector2.Zero;
+            loadLevel(1);
 
             base.Initialize();
 
@@ -120,8 +115,12 @@ namespace Platformer
                 Exit();
 
             // TODO: Add your update logic here
+
+
             player.DetectMove(Keyboard.GetState());
-            player.Update(gameTime, map);
+            player.Update(gameTime, map, ref shift);
+
+
 
             base.Update(gameTime);
         }
@@ -136,10 +135,10 @@ namespace Platformer
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player.Draw(spriteBatch);
+            player.Draw(spriteBatch, shift);
             for(int i = 0; i < map.Count; i++)
             {
-                map[i].Draw(spriteBatch);
+                map[i].Draw(spriteBatch, shift);
             }
             spriteBatch.End();
 
@@ -169,6 +168,50 @@ namespace Platformer
                 SpriteEffects.None,
                 0);
 
+        }
+
+        public void loadLevel(int levelNumber)
+        {
+            mapSize = Vector2.Zero;
+
+            map = new List<GameObject>();
+            string levelFile = System.IO.File.ReadAllText("Content/levels/level"+ levelNumber+".txt");
+
+            string[] levelTemp = levelFile.Split('\n');
+            string[][] level = new string[levelTemp.Length][];
+            for (int i = 0; i < levelTemp.Length; i++)
+            {
+                level[i] = levelTemp[i].Split();
+                for (int j = 0; j < level[i].Length; j++)
+                {
+                    switch (level[i][j])
+                    {
+                        case "-1":
+                            player = new Player(j, i, 60, 100);
+                            break;
+                        case "1":
+                            map.Add(new GameObject(j, i, true));
+                            break;
+                    }
+                    System.Console.Write(level[i][j] + "  ");
+                }
+
+                mapSize.X = Math.Max(mapSize.X, levelTemp[i].Length);
+                System.Console.WriteLine();
+
+            }
+            System.Console.WriteLine("" + level);
+            mapSize.Y = levelTemp.Length;
+            System.Console.WriteLine("" + mapSize);
+        }
+
+        public void resizeWindow(object sender, EventArgs e)
+        {
+            Constants.WindowWidth = GraphicsDevice.Viewport.Width;
+            Constants.WindowHeight = GraphicsDevice.Viewport.Height;
+            Constants.WindowHoriTileNum = (float)Constants.WindowWidth / Constants.TileSize;
+            Constants.WindowVertTileNum = (float)Constants.WindowHeight / Constants.TileSize;
+            Player.UpdateSrollBoxes();
         }
     }
 }

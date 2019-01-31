@@ -53,10 +53,10 @@ namespace Platformer.Core
             StopOnCollision();
 
             Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, solidObjectList);
-            Print("side :" + collideSides);
+            /*Print("side :" + collideSides);
             Print("acceleration :" + acceleration.ToString());
             Print("speed :" + speed.ToString());
-            Print("position :" + position.ToString());
+            Print("position :" + position.ToString());*/
         }
 
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
