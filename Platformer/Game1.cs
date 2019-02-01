@@ -21,6 +21,7 @@ namespace Platformer
         Texture2D playerTexture;
         Texture2D blockTexture;
         Texture2D skyTexture;
+        Texture2D trampolineTexture;
         static Texture2D lineTexture;
 
         Vector2 mapSize = Vector2.Zero;
@@ -79,11 +80,13 @@ namespace Platformer
             lineTexture = Content.Load<Texture2D>("images/line");
             blockTexture = Content.Load<Texture2D>("images/block");
             skyTexture = Content.Load<Texture2D>("images/sky");
+            trampolineTexture = Content.Load<Texture2D>("images/trampoline");
 
             player.Texture = playerTexture;
             for (int i = 0; i < map.Count; i++)
             {
-                if(map[i] is Bloc) { map[i].Texture = blockTexture; }
+                if(map[i] is Trampoline) { map[i].Texture = trampolineTexture; }
+                else if(map[i] is Block) { map[i].Texture = blockTexture; }
                 else if(map[i] is Sky) { map[i].Texture = skyTexture; }
             }
 
@@ -113,7 +116,8 @@ namespace Platformer
 
 
             player.DetectMove(Keyboard.GetState());
-            player.Update(gameTime, map, ref shift);
+            player.Update(gameTime, map);
+            player.UpdateShift(ref shift);
 
             if (shift.Y < Constants.WindowVertTileNum - mapSize.Y)
             {
@@ -187,14 +191,17 @@ namespace Platformer
                     switch (level[i][j])
                     {
                         case "-1":
-                            player = new Player(j, i, 60, 100);
+                            player = new Player(j+0.0001f, i, 60);
                             map.Add(new Sky(j, i));
                             break;
                         case "0":
                             map.Add(new Sky(j, i));
                             break;
                         case "1":
-                            map.Add(new Bloc(j, i));
+                            map.Add(new Block(j, i));
+                            break;
+                        case "2":
+                            map.Add(new Trampoline(j, i));
                             break;
                     }
                     System.Console.Write(level[i][j] + "  ");
@@ -213,7 +220,7 @@ namespace Platformer
             Constants.WindowHeight = GraphicsDevice.Viewport.Height;
             Constants.WindowHoriTileNum = (float)Constants.WindowWidth / Constants.TileSize;
             Constants.WindowVertTileNum = (float)Constants.WindowHeight / Constants.TileSize;
-            Player.UpdateSrollBoxes();
+            Player.UpdateScrollBoxes();
         }
     }
 }

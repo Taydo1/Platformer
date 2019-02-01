@@ -13,21 +13,30 @@ namespace Platformer.Core
 
         protected float direction;
 
-        private const float playerSpeed = 3f;
-        private const float playerJump = -7.9f;
 
 
-        public Player(float x, float y, float objectMass, float objectMaxSpeed) :
-            base(x, y, objectMass, objectMaxSpeed, true, true)
+        public Player(float x, float y, float objectMass) :
+            base(x, y, objectMass, true, true)
         {
             direction = 0;
         }
 
-        public void Update(GameTime gameTime, List<GameObject> solidObjectList, ref Vector2 shift)
+        public override void Update(GameTime gameTime, List<GameObject> solidObjectList)
         {
             base.Update(gameTime, solidObjectList);
 
-            while(Left + shift.X < scrollBoxTopLeft.X)
+            speed.X = Constants.playerSpeed * direction;
+
+
+            //Print("side :" + collideSides);
+            //Print("acceleration :" + acceleration.ToString());
+            //Print("speed :" + speed.ToString());
+            //Print("position :" + position.ToString());
+        }
+
+        public void UpdateShift(ref Vector2 shift)
+        {
+            while (Left + shift.X < scrollBoxTopLeft.X)
             {
                 shift.X += 0.001f;
             }
@@ -44,15 +53,13 @@ namespace Platformer.Core
                 shift.Y -= 0.001f;
             }
 
-            speed.X = playerSpeed * direction;
-            
         }
 
         public void DetectMove(KeyboardState state)
         {
             if (state.IsKeyDown(Keys.Up) && ( (collideSides&1) !=0 || (collideSides & 2) != 0 || (collideSides & 4) != 0))
             {
-                speed.Y = playerJump;
+                speed.Y = Constants.playerJump;
             }
             if (state.IsKeyDown(Keys.Down))
             {
@@ -76,7 +83,7 @@ namespace Platformer.Core
             }
         }
 
-        public static void UpdateSrollBoxes()
+        public static void UpdateScrollBoxes()
         {
             scrollBoxTopLeft = new Vector2(Constants.WindowHoriTileNum / 2 - 1f, Constants.WindowVertTileNum / 2);
             scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);

@@ -1,8 +1,8 @@
 ﻿namespace Platformer.Core
 {
-    class Bloc : GameObject
+    class Block : GameObject
     {
-        public Bloc(float x, float y) :
+        public Block(float x, float y) :
             base(x, y, true)
         {
             

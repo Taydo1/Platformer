@@ -12,5 +12,11 @@ namespace Platformer.Core
 
         public static float WindowHoriTileNum = (float)WindowWidth / TileSize;
         public static float WindowVertTileNum = (float)WindowHeight / TileSize;
+
+
+
+        public const float playerSpeed = 3f;
+        public const float playerJump = -7.9f;
+
     }
 }
