@@ -164,19 +164,6 @@ namespace Platformer.Core
                 return true;
         }
 
-        /*protected bool Colision(GameObject element, Vector2 movement)
-        {
-            if ((element.Left >= this.Right + movement.X)      // trop à droite
-    || (element.Right <= this.Left + movement.X) // trop à gauche
-    || (element.Top >= this.Bottom + movement.Y) // trop en bas
-    || (element.Bottom <= this.Top + movement.Y))  // trop en haut
-                return false;
-            else
-            {
-                return true;
-            }
-        }*/
-
         protected float MultUntilCollision(GameObject element, Vector2 movement)
         {
             Vector2[] points = { TopLeft, TopRight, BottomLeft, BottomRight };

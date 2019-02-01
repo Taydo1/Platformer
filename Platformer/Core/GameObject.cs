@@ -12,20 +12,22 @@ namespace Platformer.Core
         protected Texture2D texture;
         protected bool isSolid;
 
+        private static GameObject ecran = new GameObject(0, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
 
-        public GameObject(float x, float y, bool isObjectSolid)
+
+        public GameObject(float x, float y, bool isObjectSolid, float width = 0, float height = 0)
         {
             position = new Vector2(x, y);
             isSolid = isObjectSolid;
             texture = null;
-            size = Vector2.Zero;
+            size = new Vector2(width, height);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
-            Print("\n\n"+position + " "+ texture +" " + this.GetType());
-            spriteBatch.Draw(texture, (position+shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize/Constants.TextureSize, SpriteEffects.None, 0);
-
+            if (Colision(ecran, shift)) {
+                spriteBatch.Draw(texture, (position + shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, SpriteEffects.None, 0);
+            }
 
             //Game1.DrawLine(spriteBatch, TopLeft * Constants.TileSize, TopRight * Constants.TileSize);
             //Game1.DrawLine(spriteBatch, TopRight * Constants.TileSize, BottomRight * Constants.TileSize);
@@ -33,6 +35,22 @@ namespace Platformer.Core
             //Game1.DrawLine(spriteBatch, BottomLeft * Constants.TileSize, TopLeft * Constants.TileSize);
         }
 
+        protected bool Colision(GameObject element, Vector2 shift)
+        {
+            if ((element.Left >= this.Right + shift.X) || (element.Right <= this.Left + shift.X) || (element.Top >= this.Bottom + shift.Y) || (element.Bottom <= this.Top + shift.Y))  // trop en haut
+                return false;
+            else
+            {
+                return true;
+            }
+        }
+
+        public float DistanceCarre(GameObject element)
+        {
+            Vector2 pos1 = Center,
+                pos2 = element.Center;
+            return (pos1.X - pos2.X) * (pos1.X - pos2.X) + (pos1.Y - pos2.Y) * (pos1.Y - pos2.Y);
+        }
 
         public Texture2D Texture
         {
@@ -42,13 +60,6 @@ namespace Platformer.Core
                 texture = value;
                 size = new Vector2((float)texture.Width / Constants.TextureSize, (float)texture.Height / Constants.TextureSize);
             }
-        }
-
-        public float DistanceCarre(GameObject element)
-        {
-            Vector2 pos1 = Center,
-                pos2 = element.Center;
-            return (pos1.X - pos2.X) * (pos1.X - pos2.X) + (pos1.Y - pos2.Y) * (pos1.Y - pos2.Y);
         }
 
         public float Top
