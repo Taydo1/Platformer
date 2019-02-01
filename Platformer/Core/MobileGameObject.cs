@@ -11,21 +11,31 @@ namespace Platformer.Core
 
         protected Vector2 speed;
         protected Vector2 acceleration;
+        protected float direction;
+
 
         protected float mass;
+        protected float defaultHorizontalAcceleration;
+        protected float currentHorizontalAcceleration;
+        protected float maxHorizontalSpeed;
 
         protected int collideSides;
         protected List<GameObject>[] sideBlocks;
 
         protected bool applyGravity;
 
-        public MobileGameObject(float x, float y, float objectMass, bool applyGravityState, bool isObjectSolid) :
+        public MobileGameObject(float x, float y, float objectMass, bool applyGravityState, bool isObjectSolid, float objectDefaultHorizontalAcceleration, float objectMaxHorizontalSpeed) :
             base(x, y, isObjectSolid)
         {
             collideSides = 0;
 
             mass = objectMass;
             applyGravity = applyGravityState;
+            direction = 0;
+
+            defaultHorizontalAcceleration = objectDefaultHorizontalAcceleration;
+            currentHorizontalAcceleration = defaultHorizontalAcceleration;
+            maxHorizontalSpeed = objectMaxHorizontalSpeed;
 
             sideBlocks = new List<GameObject>[4];
             for(int i = 0; i < sideBlocks.Length; i++)
@@ -38,6 +48,7 @@ namespace Platformer.Core
         {
 
             acceleration = Vector2.Zero;
+            acceleration.X = currentHorizontalAcceleration * direction;
             if (applyGravity && (collideSides & 2)==0)
             {
                 acceleration.Y = gravity;
@@ -46,6 +57,13 @@ namespace Platformer.Core
 
             speed += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            if(speed.X > maxHorizontalSpeed)
+            {
+                speed.X = maxHorizontalSpeed;
+            }else if(speed.X < -maxHorizontalSpeed)
+            {
+                speed.X = -maxHorizontalSpeed;
+            }
             
             StopOnCollision();
 
@@ -56,17 +74,19 @@ namespace Platformer.Core
         {
             float maxMultUntilCollision = 1f,
                 nouveauMult,
-                speedLength = speed.Length();
+                movementLength = movement.Length();
 
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(speedLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(movementLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
                 {
                     nouveauMult = MultUntilCollision(solidObjectList[i], movement);
                     maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
                 }
             }
             position += maxMultUntilCollision * movement;
+
+            currentHorizontalAcceleration = defaultHorizontalAcceleration;
 
             collideSides = 0;
             for(int i = 0; i < sideBlocks.Length; i++)
@@ -79,7 +99,7 @@ namespace Platformer.Core
 
             for (int i = 0; i < solidObjectList.Count; i++)
             {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(speedLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
+                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(movementLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
                 {
                     DetectCollideSide(solidObjectList[i]);
                 }
@@ -246,6 +266,7 @@ namespace Platformer.Core
 
         public float SpeedX { get => speed.X; set => speed.X = value; }
         public float SpeedY { get => speed.Y; set => speed.Y = value; }
-
+        public float DefaultHorizontalAcceleration { get => defaultHorizontalAcceleration; }
+        public float CurrentHorizontalAcceleration { get => currentHorizontalAcceleration; set => currentHorizontalAcceleration = value; }
     }
 }

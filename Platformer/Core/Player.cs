@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 using System.Collections.Generic;
+using System;
 
 namespace Platformer.Core
 {
@@ -11,27 +12,20 @@ namespace Platformer.Core
         private static Vector2 scrollBoxTopLeft = new Vector2(Constants.WindowHoriTileNum / 2 - 1f, Constants.WindowVertTileNum / 2);
         private static Vector2 scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);
 
-        protected float direction;
-
-
 
         public Player(float x, float y, float objectMass) :
-            base(x, y, objectMass, true, true)
+            base(x, y, objectMass, true, true, Constants.initialPlayerAcceleration, Constants.maxPlayerSpeed)
         {
-            direction = 0;
         }
 
         public override void Update(GameTime gameTime, List<GameObject> solidObjectList)
         {
             base.Update(gameTime, solidObjectList);
-
-            speed.X = Constants.playerSpeed * direction;
-
-
             //Print("side :" + collideSides);
             //Print("acceleration :" + acceleration.ToString());
-            //Print("speed :" + speed.ToString());
+            Print("speed :" + speed.ToString());
             //Print("position :" + position.ToString());
+            Print("direction :" + direction.ToString());
         }
 
         public void UpdateShift(ref Vector2 shift)
@@ -59,7 +53,7 @@ namespace Platformer.Core
         {
             if (state.IsKeyDown(Keys.Up) && ( (collideSides&1) !=0 || (collideSides & 2) != 0 || (collideSides & 4) != 0))
             {
-                speed.Y = Constants.playerJump;
+                speed.Y = Constants.initialPlayerJump;
             }
             if (state.IsKeyDown(Keys.Down))
             {
@@ -71,7 +65,9 @@ namespace Platformer.Core
 
             if (state.IsKeyDown(Keys.Left) == state.IsKeyDown(Keys.Right))
             {
-                direction = 0;
+                direction = -0.1f * speed.X;
+                if (direction > 1) direction = 1;
+                else if (direction < -1) direction = -1;
             }
             else if (state.IsKeyDown(Keys.Left))
             {

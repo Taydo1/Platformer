@@ -22,6 +22,7 @@ namespace Platformer
         Texture2D blockTexture;
         Texture2D skyTexture;
         Texture2D trampolineTexture;
+        Texture2D iceTexture;
         static Texture2D lineTexture;
 
         Vector2 mapSize = Vector2.Zero;
@@ -81,11 +82,13 @@ namespace Platformer
             blockTexture = Content.Load<Texture2D>("images/block");
             skyTexture = Content.Load<Texture2D>("images/sky");
             trampolineTexture = Content.Load<Texture2D>("images/trampoline");
+            iceTexture = Content.Load<Texture2D>("images/ice");
 
             player.Texture = playerTexture;
             for (int i = 0; i < map.Count; i++)
             {
                 if(map[i] is Trampoline) { map[i].Texture = trampolineTexture; }
+                else if(map[i] is Ice) { map[i].Texture = iceTexture; }
                 else if(map[i] is Block) { map[i].Texture = blockTexture; }
                 else if(map[i] is Sky) { map[i].Texture = skyTexture; }
             }
@@ -202,6 +205,9 @@ namespace Platformer
                             break;
                         case "2":
                             map.Add(new Trampoline(j, i));
+                            break;
+                        case "3":
+                            map.Add(new Ice(j, i));
                             break;
                     }
                     System.Console.Write(level[i][j] + "  ");

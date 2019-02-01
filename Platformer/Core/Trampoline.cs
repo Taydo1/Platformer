@@ -11,7 +11,7 @@
         public override void ActionOnTouch(MobileGameObject mobileElement, int side)
         {
             if (side == 1) {
-                mobileElement.SpeedY = -12; ;
+                mobileElement.SpeedY = -12;
             }
         }
     }
