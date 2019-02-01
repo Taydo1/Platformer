@@ -7,8 +7,6 @@ namespace Platformer.Core
 {
     class MobileGameObject : GameObject
     {
-        public const float gravity = 10f;
-
         protected Vector2 speed;
         protected Vector2 acceleration;
         protected float direction;
@@ -51,7 +49,7 @@ namespace Platformer.Core
             acceleration.X = currentHorizontalAcceleration * direction;
             if (applyGravity && (collideSides & 2)==0)
             {
-                acceleration.Y = gravity;
+                acceleration.Y = Constants.gravity;
             }
 
 

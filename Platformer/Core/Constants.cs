@@ -15,6 +15,7 @@ namespace Platformer.Core
 
 
 
+        public const float gravity = 10f;
         public const float initialPlayerAcceleration = 100f;
         public const float maxPlayerSpeed = 3f;
         public const float initialPlayerJump = -7.9f;

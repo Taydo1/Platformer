@@ -17,6 +17,7 @@ namespace Platformer
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        KeyboardState previousState;
 
         Texture2D playerTexture;
         Texture2D blockTexture;
@@ -59,7 +60,7 @@ namespace Platformer
             // TODO: Add your initialization logic here
 
             shift = Vector2.Zero;
-
+            previousState = Keyboard.GetState();
             LoadLevel(1);
 
             base.Initialize();
@@ -117,8 +118,8 @@ namespace Platformer
 
             // TODO: Add your update logic here
 
-
-            player.DetectMove(Keyboard.GetState());
+            KeyboardState state = Keyboard.GetState();
+            player.DetectMove(state, previousState, map);
             player.Update(gameTime, map);
             player.UpdateShift(ref shift);
 
@@ -127,6 +128,7 @@ namespace Platformer
                 shift.Y = Constants.WindowVertTileNum - mapSize.Y;
             }
 
+            previousState = state;
 
             base.Update(gameTime);
         }
