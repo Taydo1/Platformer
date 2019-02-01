@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ namespace Platformer.Core
         protected float maxSpeed;
 
         protected int collideSides;
+        protected List<GameObject>[] sideBlocks;
 
         protected bool applyGravity;
 
@@ -29,6 +29,12 @@ namespace Platformer.Core
             mass = objectMass;
             maxSpeed = objectMaxSpeed;
             applyGravity = applyGravityState;
+
+            sideBlocks = new List<GameObject>[4];
+            for(int i = 0; i < sideBlocks.Length; i++)
+            {
+                sideBlocks[i] = new List<GameObject>();
+            }
         }
 
         public void Update(GameTime gameTime, List<GameObject> solidObjectList)
@@ -77,6 +83,14 @@ namespace Platformer.Core
             position += maxMultUntilCollision * movement;
 
             collideSides = 0;
+            for(int i = 0; i < sideBlocks.Length; i++)
+            {
+                Console.Write(" " + sideBlocks[i].Count);
+                sideBlocks[i].Clear();
+            }
+            Console.WriteLine();
+
+
             for (int i = 0; i < solidObjectList.Count; i++)
             {
                 if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(speedLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
@@ -195,37 +209,43 @@ namespace Platformer.Core
         private void DetectCollideSide(GameObject element)
         {
             float offset = 0.001f;
+            float t_collision = element.Bottom - Top;
+            float b_collision = Bottom - element.Top;
+            float r_collision = Right - element.Left;
+            float l_collision = element.Right - Left;
 
-            if (!((element.Left >= this.Right + offset) || (element.Right <= this.Left - offset) || (element.Top >= this.Bottom + offset) || (element.Bottom <= this.Top - offset))) {
-
-                float t_collision = element.Bottom - Top;
-                float b_collision = Bottom - element.Top;
-                float r_collision = Right - element.Left;
-                float l_collision = element.Right - Left;
-                
-
-                if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
+            if (!((element.Left >= this.Right + offset) || (element.Right <= this.Left) || (element.Top >= this.Bottom) || (element.Bottom <= this.Top))) {
+                if (r_collision < l_collision && r_collision < t_collision && r_collision < b_collision)
                 {
-                    //Top collision
-                    collideSides |= 8;
+                    //Right collision
+                    collideSides |= 1;
+                    sideBlocks[0].Add(element);
                 }
-                if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
-                {
-                    //bottom collision
-                    collideSides |= 2;
-                }
+            }
+            else if (!((element.Left >= this.Right) || (element.Right <= this.Left - offset) || (element.Top >= this.Bottom) || (element.Bottom <= this.Top))) {
                 if (l_collision < r_collision && l_collision < t_collision && l_collision < b_collision)
                 {
                     //Left collision
                     collideSides |= 4;
+                    sideBlocks[2].Add(element);
                 }
-                if (r_collision < l_collision && r_collision < t_collision && r_collision < b_collision)
+            }
+            else if (!((element.Left >= this.Right) || (element.Right <= this.Left) || (element.Top >= this.Bottom + offset) || (element.Bottom <= this.Top))) {
+                if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
                 {
-                    //Right collision
-                    collideSides |= 1; 
+                    //bottom collision
+                    collideSides |= 2;
+                    sideBlocks[1].Add(element);
+                }
+            }
+            else if (!((element.Left >= this.Right) || (element.Right <= this.Left) || (element.Top >= this.Bottom) || (element.Bottom <= this.Top - offset))) {
+                if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
+                {
+                    //Top collision
+                    collideSides |= 8;
+                    sideBlocks[3].Add(element);
                 }
             }
         }
-
     }
 }

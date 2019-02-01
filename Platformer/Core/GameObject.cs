@@ -28,11 +28,10 @@ namespace Platformer.Core
             if (Colision(ecran, shift)) {
                 spriteBatch.Draw(texture, (position + shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, SpriteEffects.None, 0);
             }
-
-            //Game1.DrawLine(spriteBatch, TopLeft * Constants.TileSize, TopRight * Constants.TileSize);
-            //Game1.DrawLine(spriteBatch, TopRight * Constants.TileSize, BottomRight * Constants.TileSize);
-            //Game1.DrawLine(spriteBatch, BottomRight * Constants.TileSize, BottomLeft * Constants.TileSize);
-            //Game1.DrawLine(spriteBatch, BottomLeft * Constants.TileSize, TopLeft * Constants.TileSize);
+            Game1.DrawLine(spriteBatch, (TopLeft + shift) * Constants.TileSize, (TopRight + shift) * Constants.TileSize);
+            Game1.DrawLine(spriteBatch, (TopRight + shift) * Constants.TileSize, (BottomRight + shift) * Constants.TileSize);
+            Game1.DrawLine(spriteBatch, (BottomRight + shift) * Constants.TileSize, (BottomLeft + shift) * Constants.TileSize);
+            Game1.DrawLine(spriteBatch, (BottomLeft + shift) * Constants.TileSize, (TopLeft + shift) * Constants.TileSize);
         }
 
         protected bool Colision(GameObject element, Vector2 shift)
