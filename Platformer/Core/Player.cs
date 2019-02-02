@@ -23,7 +23,7 @@ namespace Platformer.Core
             base.Update(gameTime, solidObjectList);
             //Print("side :" + collideSides);
             //Print("acceleration :" + acceleration.ToString());
-            Print("speed :" + speed.ToString());
+            //Print("speed :" + speed.ToString());
             //Print("position :" + position.ToString());
             //Print("direction :" + direction.ToString());
         }
@@ -57,25 +57,26 @@ namespace Platformer.Core
                 if (direction > 1) direction = 1;
                 else if (direction < -1) direction = -1;
             }
-            else if (state.IsKeyDown(Keys.Left))
-            {
-                direction = -1;
-                if(speed.Y > 0 && (collideSides & 4) != 0)
-                {
-                    speed.Y = 0;
-                }
-            }
             else if (state.IsKeyDown(Keys.Right))
             {
                 direction = 1;
-                if (speed.Y > 0 && (collideSides & 1) != 0)
+            }
+            if (state.IsKeyDown(Keys.Left))
+            {
+                direction = -1;
+            }
+
+            if (state.IsKeyDown(Keys.Space))
+            {
+                if (speed.Y > 0 && ((collideSides & 1) != 0 || (collideSides & 4) != 0))
                 {
                     speed.Y = 0;
                 }
             }
 
+            Print("" + (direction == -1)+ "  "+ ((collideSides & 1) != 0));
             if (state.IsKeyDown(Keys.Up)
-                && ((collideSides & 2) != 0 || ((collideSides & 1) != 0 && direction==-1) ||( (collideSides & 4) != 0 && direction == 1)))
+                && ((collideSides & 2) != 0 || ((collideSides & 1) != 0 && direction == -1) || ((collideSides & 4) != 0 && direction == 1)))
             {
                 speed.Y = Constants.initialPlayerJump;
             }
