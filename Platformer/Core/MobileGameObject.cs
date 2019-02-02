@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,9 @@ namespace Platformer.Core
         protected Vector2 speed;
         protected Vector2 acceleration;
         protected float direction;
+        private List<Vector2> forces;
+        protected bool isAlive;
+        protected int textureDirection;
 
 
         protected float mass;
@@ -22,14 +26,17 @@ namespace Platformer.Core
 
         protected bool applyGravity;
 
-        public MobileGameObject(float x, float y, float objectMass, bool applyGravityState, bool isObjectSolid, float objectDefaultHorizontalAcceleration, float objectMaxHorizontalSpeed) :
-            base(x, y, isObjectSolid)
+        public MobileGameObject(float x, float y, float objectMass, bool applyGravityState, bool isObjectSolid, int objectTextureDuration, float objectDefaultHorizontalAcceleration, float objectMaxHorizontalSpeed) :
+            base(x, y, isObjectSolid, objectTextureDuration)
         {
             collideSides = 0;
 
             mass = objectMass;
             applyGravity = applyGravityState;
             direction = 0;
+            forces = new List<Vector2>();
+            isAlive = true;
+            textureDirection = 1;
 
             defaultHorizontalAcceleration = objectDefaultHorizontalAcceleration;
             currentHorizontalAcceleration = defaultHorizontalAcceleration;
@@ -42,8 +49,19 @@ namespace Platformer.Core
             }
         }
 
-        public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList)
+        public override void Update(GameTime gameTime, List<GameObject> map)
         {
+            if(textureDirection == 1)
+            {
+                drawDiretionTexture = SpriteEffects.None;
+            }
+            else if(textureDirection == -1)
+            {
+                drawDiretionTexture = SpriteEffects.FlipHorizontally;
+            }
+
+            base.Update(gameTime, map);
+
 
             acceleration = Vector2.Zero;
             acceleration.X = currentHorizontalAcceleration * direction;
@@ -51,6 +69,12 @@ namespace Platformer.Core
             {
                 acceleration.Y = Constants.gravity;
             }
+
+            for(int i = 0; i < forces.Count; i ++)
+            {
+                acceleration += forces[i] / mass;
+            }
+            forces.Clear();
 
 
             speed += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -65,7 +89,16 @@ namespace Platformer.Core
             
             StopOnCollision();
 
-            Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, solidObjectList);
+            Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, map);
+
+            if(position.Y > Constants.WindowVertTileNum)
+            {
+                isAlive = false;
+            }
+
+
+            if (speed.X > 0) textureDirection = 1;
+            else if (speed.X < 0) textureDirection = -1;
         }
 
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
@@ -110,6 +143,11 @@ namespace Platformer.Core
                     sideBlocks[i][j].ActionOnTouch(this, i);
                 }
             }
+        }
+
+        protected void AddForce(Vector2 force)
+        {
+            forces.Add(force);
         }
 
         private void StopOnCollision()
@@ -259,12 +297,12 @@ namespace Platformer.Core
                 }
             }
         }
-
-
+        
 
         public float SpeedX { get => speed.X; set => speed.X = value; }
         public float SpeedY { get => speed.Y; set => speed.Y = value; }
         public float DefaultHorizontalAcceleration { get => defaultHorizontalAcceleration; }
         public float CurrentHorizontalAcceleration { get => currentHorizontalAcceleration; set => currentHorizontalAcceleration = value; }
+        public bool IsAlive { get => isAlive;}
     }
 }

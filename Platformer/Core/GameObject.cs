@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 
 using System;
+using System.Collections.Generic;
 
 namespace Platformer.Core
 {
@@ -9,24 +10,47 @@ namespace Platformer.Core
     {
         protected Vector2 position;
         protected Vector2 size;
-        protected Texture2D texture;
+        protected Texture2D[] texture;
+        protected int currentTexture;
+        protected TimeSpan nextTextureTime;
+        protected TimeSpan textureDuration;
         protected bool isSolid;
+        protected SpriteEffects drawDiretionTexture;
 
-        private static GameObject ecran = new GameObject(0, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
+        private static GameObject screen = new GameObject(0, 0, false, 0, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
 
 
-        public GameObject(float x, float y, bool isObjectSolid, float width = 0, float height = 0)
+        public GameObject(float x, float y, bool isObjectSolid, int objectTextureDuration, float width = 0, float height = 0)
         {
             position = new Vector2(x, y);
             isSolid = isObjectSolid;
             texture = null;
             size = new Vector2(width, height);
+            currentTexture = 0;
+            nextTextureTime = new TimeSpan(0);
+            textureDuration = new TimeSpan(0, 0, 0, 0, objectTextureDuration);
+            drawDiretionTexture = SpriteEffects.None;
+        }
+
+        public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList)
+        {
+            if(gameTime.TotalGameTime >= nextTextureTime)
+            {
+                nextTextureTime = gameTime.TotalGameTime + textureDuration;
+                currentTexture++;
+                if (currentTexture >= texture.Length)
+                {
+                    currentTexture -= texture.Length;
+                }
+
+                size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
-            if (Colision(ecran, shift)) {
-                spriteBatch.Draw(texture, (position + shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, SpriteEffects.None, 0);
+            if (Colision(screen, shift)) {
+                spriteBatch.Draw(texture[currentTexture], (position + shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, drawDiretionTexture, 0);
             }
             /*Game1.DrawLine(spriteBatch, (TopLeft + shift) * Constants.TileSize, (TopRight + shift) * Constants.TileSize);
             Game1.DrawLine(spriteBatch, (TopRight + shift) * Constants.TileSize, (BottomRight + shift) * Constants.TileSize);
@@ -55,13 +79,13 @@ namespace Platformer.Core
             return (pos1.X - pos2.X) * (pos1.X - pos2.X) + (pos1.Y - pos2.Y) * (pos1.Y - pos2.Y);
         }
 
-        public Texture2D Texture
+        public Texture2D[] Texture
         {
             get => texture;
             set
             {
                 texture = value;
-                size = new Vector2((float)texture.Width / Constants.TextureSize, (float)texture.Height / Constants.TextureSize);
+                size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
             }
         }
 
@@ -131,6 +155,9 @@ namespace Platformer.Core
             System.Console.WriteLine(text);
         }
 
-        
+        public static void UpdateScreen()
+        {
+            screen = new GameObject(0, 0, false, 0, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
+        }
     }
 }

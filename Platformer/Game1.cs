@@ -19,11 +19,12 @@ namespace Platformer
         SpriteBatch spriteBatch;
         KeyboardState previousState;
 
-        Texture2D playerTexture;
+        Texture2D[] playerTexture = new Texture2D[13];
         Texture2D blockTexture;
         Texture2D skyTexture;
         Texture2D trampolineTexture;
         Texture2D iceTexture;
+        Texture2D shotTexture;
         static Texture2D lineTexture;
 
         Vector2 mapSize = Vector2.Zero;
@@ -78,20 +79,25 @@ namespace Platformer
 
             // TODO: use this.Content to load your game content here
 
-            playerTexture = Content.Load<Texture2D>("images/perso");
+            for(int i = 0; i < playerTexture.Length; i++)
+            {
+                playerTexture[i] = Content.Load<Texture2D>("images/perso"+CompleteNumber(i, 2));
+            }
             lineTexture = Content.Load<Texture2D>("images/line");
             blockTexture = Content.Load<Texture2D>("images/block");
             skyTexture = Content.Load<Texture2D>("images/sky");
             trampolineTexture = Content.Load<Texture2D>("images/trampoline");
             iceTexture = Content.Load<Texture2D>("images/ice");
+            shotTexture = Content.Load<Texture2D>("images/shot");
 
             player.Texture = playerTexture;
             for (int i = 0; i < map.Count; i++)
             {
-                if(map[i] is Trampoline) { map[i].Texture = trampolineTexture; }
-                else if(map[i] is Ice) { map[i].Texture = iceTexture; }
-                else if(map[i] is Block) { map[i].Texture = blockTexture; }
-                else if(map[i] is Sky) { map[i].Texture = skyTexture; }
+                if(map[i] is Trampoline) { map[i].Texture = new[] { trampolineTexture }; }
+                else if(map[i] is Ice) { map[i].Texture = new[] { iceTexture }; }
+                else if(map[i] is Block) { map[i].Texture = new[] { blockTexture }; }
+                else if(map[i] is Shot) { map[i].Texture = new[] { iceTexture }; }
+                else if(map[i] is Sky) { map[i].Texture = new[] { skyTexture }; }
             }
 
 
@@ -119,13 +125,19 @@ namespace Platformer
             // TODO: Add your update logic here
 
             KeyboardState state = Keyboard.GetState();
-            player.DetectMove(state, previousState, map);
+            player.DetectMove(state, GamePad.GetState(PlayerIndex.One), map, gameTime, shotTexture);
             player.Update(gameTime, map);
             player.UpdateShift(ref shift);
+
 
             if (shift.Y < Constants.WindowVertTileNum - mapSize.Y)
             {
                 shift.Y = Constants.WindowVertTileNum - mapSize.Y;
+            }
+
+            for(int i = 0; i < map.Count; i++)
+            {
+                map[i].Update(gameTime, map);
             }
 
             previousState = state;
@@ -178,6 +190,16 @@ namespace Platformer
 
         }
 
+        public string CompleteNumber(int number, int digitNumber)
+        {
+            string result = number.ToString();
+            while(result.Length< digitNumber)
+            {
+                result = "0" + result;
+            }
+            return result;
+        }
+
         public void LoadLevel(int levelNumber)
         {
             mapSize = Vector2.Zero;
@@ -196,7 +218,7 @@ namespace Platformer
                     switch (level[i][j])
                     {
                         case "-1":
-                            player = new Player(j+0.0001f, i, 60);
+                            player = new Player(j+0.0001f, i);
                             map.Add(new Sky(j, i));
                             break;
                         case "0":
@@ -228,7 +250,9 @@ namespace Platformer
             Constants.WindowHeight = GraphicsDevice.Viewport.Height;
             Constants.WindowHoriTileNum = (float)Constants.WindowWidth / Constants.TileSize;
             Constants.WindowVertTileNum = (float)Constants.WindowHeight / Constants.TileSize;
+
             Player.UpdateScrollBoxes();
+            GameObject.UpdateScreen();
         }
     }
 }
