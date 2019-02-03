@@ -95,10 +95,6 @@ namespace Platformer.Core
             {
                 isAlive = false;
             }
-
-
-            if (speed.X > 0) textureDirection = 1;
-            else if (speed.X < 0) textureDirection = -1;
         }
 
         protected void Move(Vector2 movement, List<GameObject> solidObjectList)
@@ -303,6 +299,6 @@ namespace Platformer.Core
         public float SpeedY { get => speed.Y; set => speed.Y = value; }
         public float DefaultHorizontalAcceleration { get => defaultHorizontalAcceleration; }
         public float CurrentHorizontalAcceleration { get => currentHorizontalAcceleration; set => currentHorizontalAcceleration = value; }
-        public bool IsAlive { get => isAlive;}
+        public bool IsAlive { get => isAlive; set => isAlive = value; }
     }
 }

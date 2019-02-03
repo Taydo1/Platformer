@@ -50,6 +50,7 @@
     <Compile Include="Core\Player.cs" />
     <Compile Include="Core\Shot.cs" />
     <Compile Include="Core\Sky.cs" />
+    <Compile Include="Core\Spike.cs" />
     <Compile Include="Core\Trampoline.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

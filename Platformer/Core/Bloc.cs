@@ -3,7 +3,7 @@
     class Block : GameObject
     {
         public Block(float x, float y) :
-            base(x, y, true, 0)
+            base(x, y, true, int.MaxValue)
         {
             
         }

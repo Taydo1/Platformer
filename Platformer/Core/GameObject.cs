@@ -16,6 +16,7 @@ namespace Platformer.Core
         protected TimeSpan textureDuration;
         protected bool isSolid;
         protected SpriteEffects drawDiretionTexture;
+        protected float rotationAngle;
 
         private static GameObject screen = new GameObject(0, 0, false, 0, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
 
@@ -30,6 +31,7 @@ namespace Platformer.Core
             nextTextureTime = new TimeSpan(0);
             textureDuration = new TimeSpan(0, 0, 0, 0, objectTextureDuration);
             drawDiretionTexture = SpriteEffects.None;
+            rotationAngle = 0;
         }
 
         public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList)
@@ -43,14 +45,14 @@ namespace Platformer.Core
                     currentTexture -= texture.Length;
                 }
 
-                size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
+                //size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
             if (Colision(screen, shift)) {
-                spriteBatch.Draw(texture[currentTexture], (position + shift) * Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, drawDiretionTexture, 0);
+                spriteBatch.Draw(texture[currentTexture], (Center + shift) * Constants.TileSize, null, Color.White, rotationAngle, new Vector2(texture[currentTexture].Width, texture[currentTexture].Height) / 2, (float)Constants.TileSize / Constants.TextureSize, drawDiretionTexture, 0);
             }
             /*Game1.DrawLine(spriteBatch, (TopLeft + shift) * Constants.TileSize, (TopRight + shift) * Constants.TileSize);
             Game1.DrawLine(spriteBatch, (TopRight + shift) * Constants.TileSize, (BottomRight + shift) * Constants.TileSize);
@@ -79,7 +81,7 @@ namespace Platformer.Core
             return (pos1.X - pos2.X) * (pos1.X - pos2.X) + (pos1.Y - pos2.Y) * (pos1.Y - pos2.Y);
         }
 
-        public Texture2D[] Texture
+        public virtual Texture2D[] Texture
         {
             get => texture;
             set

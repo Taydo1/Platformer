@@ -24,6 +24,7 @@ namespace Platformer
         Texture2D skyTexture;
         Texture2D trampolineTexture;
         Texture2D iceTexture;
+        Texture2D spikeTexture;
         Texture2D shotTexture;
         static Texture2D lineTexture;
 
@@ -88,6 +89,7 @@ namespace Platformer
             skyTexture = Content.Load<Texture2D>("images/sky");
             trampolineTexture = Content.Load<Texture2D>("images/trampoline");
             iceTexture = Content.Load<Texture2D>("images/ice");
+            spikeTexture = Content.Load<Texture2D>("images/spike");
             shotTexture = Content.Load<Texture2D>("images/shot");
 
             player.Texture = playerTexture;
@@ -95,6 +97,7 @@ namespace Platformer
             {
                 if(map[i] is Trampoline) { map[i].Texture = new[] { trampolineTexture }; }
                 else if(map[i] is Ice) { map[i].Texture = new[] { iceTexture }; }
+                else if(map[i] is Spike) { map[i].Texture = new[] { spikeTexture }; }
                 else if(map[i] is Block) { map[i].Texture = new[] { blockTexture }; }
                 else if(map[i] is Shot) { map[i].Texture = new[] { iceTexture }; }
                 else if(map[i] is Sky) { map[i].Texture = new[] { skyTexture }; }
@@ -128,6 +131,8 @@ namespace Platformer
             player.DetectMove(state, GamePad.GetState(PlayerIndex.One), map, gameTime, shotTexture);
             player.Update(gameTime, map);
             player.UpdateShift(ref shift);
+
+            Console.WriteLine(player.IsAlive);
 
 
             if (shift.Y < Constants.WindowVertTileNum - mapSize.Y)
@@ -206,6 +211,8 @@ namespace Platformer
 
             map = new List<GameObject>();
             string levelFile = System.IO.File.ReadAllText("Content/levels/level"+ levelNumber+".txt");
+            levelFile = levelFile.Replace("  ", " ");
+            levelFile = levelFile.Replace("  ", " ");
 
             string[] levelTemp = levelFile.Split('\n');
             string[][] level = new string[levelTemp.Length][];
@@ -214,27 +221,36 @@ namespace Platformer
                 level[i] = levelTemp[i].Split();
                 for (int j = 0; j < level[i].Length; j++)
                 {
-
-                    switch (level[i][j])
+                    int tile;
+                    if(!Int32.TryParse(level[i][j], out tile)){
+                        continue;
+                    }
+                    switch (tile)
                     {
-                        case "-1":
+                        case -1:
                             player = new Player(j+0.0001f, i);
                             map.Add(new Sky(j, i));
                             break;
-                        case "0":
+                        case 0:
                             map.Add(new Sky(j, i));
                             break;
-                        case "1":
+                        case 1:
                             map.Add(new Block(j, i));
                             break;
-                        case "2":
+                        case 2:
                             map.Add(new Trampoline(j, i));
                             break;
-                        case "3":
+                        case 3:
                             map.Add(new Ice(j, i));
                             break;
+                        case 100:
+                        case 101:
+                        case 102:
+                        case 103:
+                            map.Add(new Spike(j, i,tile-100));
+                            break;
                     }
-                    System.Console.Write(level[i][j] + "  ");
+                    System.Console.Write(tile + "  ");
                 }
 
                 mapSize.X = Math.Max(mapSize.X, levelTemp[i].Length);

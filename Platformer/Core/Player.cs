@@ -99,7 +99,7 @@ namespace Platformer.Core
             }
 
 
-            if ((keyState.IsKeyDown(Keys.Space) || padState.Buttons.RightShoulder == ButtonState.Pressed) && gameTime.TotalGameTime > nextShotTime)
+            if ((keyState.IsKeyDown(Keys.Space) || padState.Buttons.B == ButtonState.Pressed) && gameTime.TotalGameTime > nextShotTime)
             {
                 Shot shot = new Shot(Left, CenterVert, textureDirection);
                 shot.Texture = new[] { shotTexture };
