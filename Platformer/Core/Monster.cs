@@ -13,24 +13,26 @@ namespace Platformer.Core
             direction = 1;
         }
 
-        public override void Update(GameTime gameTime, List<GameObject> map)
+        public override void Update(GameTime gameTime, List<GameObject> map, Vector2 shift)
         {
-            base.Update(gameTime, map);
-
-            //Print("side :" + collideSides);
-            //Print("acceleration :" + acceleration.ToString());
-            //Print("speed :" + speed.ToString());
-            //Print("position :" + position.ToString());
-            //Print("direction :" + direction.ToString());
-
-            if ((collideSides & 2) == 0 || (collideSides & 1) != 0 || (collideSides & 4) != 0)
+            if (Colision(screen, shift))
             {
-                direction = -direction;
-                textureDirection = -textureDirection;
-                Move(-2*speed * (float)gameTime.ElapsedGameTime.TotalSeconds, map);
+                base.Update(gameTime, map, shift);
+
+                //Print("side :" + collideSides);
+                //Print("acceleration :" + acceleration.ToString());
+                //Print("speed :" + speed.ToString());
+                //Print("position :" + position.ToString());
+                //Print("direction :" + direction.ToString());
+
+                if ((collideSides & 2) == 0 || (collideSides & 1) != 0 || (collideSides & 4) != 0)
+                {
+                    direction = -direction;
+                    textureDirection = -textureDirection;
+                    Move(-2 * speed * (float)gameTime.ElapsedGameTime.TotalSeconds, map);
+                }
+
             }
-
-
         }
 
         public override void ActionOnTouch(MobileGameObject mobileElement, int side)

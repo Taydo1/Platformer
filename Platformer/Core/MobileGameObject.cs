@@ -49,70 +49,74 @@ namespace Platformer.Core
             }
         }
 
-        public override void Update(GameTime gameTime, List<GameObject> map)
+        public override void Update(GameTime gameTime, List<GameObject> map, Vector2 shift)
         {
-            if(textureDirection == 1)
+            if (Colision(screen, shift))
             {
-                drawDirectionTexture = SpriteEffects.None;
-            }
-            else if(textureDirection == -1)
-            {
-                drawDirectionTexture = SpriteEffects.FlipHorizontally;
-            }
-
-            base.Update(gameTime, map);
-
-
-            acceleration = Vector2.Zero;
-            acceleration.X = currentHorizontalAcceleration * direction;
-            if (applyGravity && (collideSides & 2)==0)
-            {
-                acceleration.Y = Constants.gravity;
-            }
-
-            for(int i = 0; i < forces.Count; i ++)
-            {
-                acceleration += forces[i] / mass;
-            }
-            forces.Clear();
-
-
-            speed += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if(speed.X > maxHorizontalSpeed)
-            {
-                speed.X = maxHorizontalSpeed;
-            }else if(speed.X < -maxHorizontalSpeed)
-            {
-                speed.X = -maxHorizontalSpeed;
-            }
-            
-            StopOnCollision();
-
-            Vector2 movement = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Move(movement, map);
-
-            for (int i = 0; i < map.Count; i++)
-            {
-                if (map[i] is Checkpoint checkpoint && checkpoint.Contain(Center))
+                if (textureDirection == 1)
                 {
-                    sideBlocks[4].Add(checkpoint);
+                    drawDirectionTexture = SpriteEffects.None;
                 }
-                else if (map[i].IsSolid && DistanceCarre(map[i]) < Math.Pow(movement.Length() + DiagonalLength + map[i].DiagonalLength, 2))
+                else if (textureDirection == -1)
                 {
-                    DetectCollideSide(map[i]);
+                    drawDirectionTexture = SpriteEffects.FlipHorizontally;
                 }
-            }
 
-            for (int i = 0; i < sideBlocks.Length; i++)
-            {
-                for (int j = 0; j < sideBlocks[i].Count; j++)
+                base.Update(gameTime, map, shift);
+
+
+                acceleration = Vector2.Zero;
+                acceleration.X = currentHorizontalAcceleration * direction;
+                if (applyGravity && (collideSides & 2) == 0)
                 {
-                    sideBlocks[i][j].ActionOnTouch(this, i);
+                    acceleration.Y = Constants.gravity;
                 }
-            }
 
-            if (position.Y > Constants.WindowVertTileNum)
+                for (int i = 0; i < forces.Count; i++)
+                {
+                    acceleration += forces[i] / mass;
+                }
+                forces.Clear();
+
+
+                speed += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (speed.X > maxHorizontalSpeed)
+                {
+                    speed.X = maxHorizontalSpeed;
+                }
+                else if (speed.X < -maxHorizontalSpeed)
+                {
+                    speed.X = -maxHorizontalSpeed;
+                }
+
+                StopOnCollision();
+
+                Vector2 movement = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Move(movement, map);
+
+                for (int i = 0; i < map.Count; i++)
+                {
+                    if (map[i] is Checkpoint checkpoint && checkpoint.Contain(Center))
+                    {
+                        sideBlocks[4].Add(checkpoint);
+                    }
+                    else if (map[i].IsSolid && DistanceCarre(map[i]) < Math.Pow(movement.Length() + DiagonalLength + map[i].DiagonalLength, 2))
+                    {
+                        DetectCollideSide(map[i]);
+                    }
+                }
+
+                for (int i = 0; i < sideBlocks.Length; i++)
+                {
+                    for (int j = 0; j < sideBlocks[i].Count; j++)
+                    {
+                        sideBlocks[i][j].ActionOnTouch(this, i);
+                    }
+                }
+
+            }
+            if (position.Y > Game1.mapSize.Y)
             {
                 Die();
             }

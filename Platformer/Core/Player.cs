@@ -25,9 +25,9 @@ namespace Platformer.Core
             lastCheckpoint = new Vector2(x, y);
         }
 
-        public override void Update(GameTime gameTime, List<GameObject> map)
+        public override void Update(GameTime gameTime, List<GameObject> map, Vector2 shift)
         {
-            base.Update(gameTime, map);
+            base.Update(gameTime, map, shift);
             //Print("side :" + collideSides);
             //Print("sideBlock : "+sideBlocks[0].Count + " " + sideBlocks[1].Count + " " + sideBlocks[2].Count + " " + sideBlocks[3].Count + " " + sideBlocks[4].Count);
             //Print("acceleration :" + acceleration.ToString());

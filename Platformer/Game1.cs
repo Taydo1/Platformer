@@ -30,7 +30,7 @@ namespace Platformer
         Texture2D monsterTexture;
         static Texture2D lineTexture;
 
-        Vector2 mapSize = Vector2.Zero;
+        static public Vector2 mapSize = Vector2.Zero;
         Vector2 shift;
 
         List<GameObject> map;
@@ -140,7 +140,7 @@ namespace Platformer
 
             KeyboardState state = Keyboard.GetState();
             player.DetectMove(state, GamePad.GetState(PlayerIndex.One), map, gameTime, shotTexture);
-            player.Update(gameTime, map);
+            player.Update(gameTime, map, shift);
             player.UpdateShift(ref shift);
 
             //Console.WriteLine(player.IsAlive);
@@ -153,7 +153,7 @@ namespace Platformer
 
             for(int i = 0; i < map.Count; i++)
             {
-                map[i].Update(gameTime, map);
+                map[i].Update(gameTime, map, shift);
             }
 
             previousState = state;

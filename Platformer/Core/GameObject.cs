@@ -22,7 +22,7 @@ namespace Platformer.Core
         protected Texture2D backgroundTexture;
         protected Vector2 backgroundPosition;
 
-        private static GameObject screen = new GameObject(0, 0, false, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
+        protected static GameObject screen = new GameObject(0, 0, false, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
 
 
         public GameObject(float x, float y, bool isObjectSolid, int objectTextureDuration, bool objectNeedBackground, float width = 0, float height = 0)
@@ -42,18 +42,21 @@ namespace Platformer.Core
             backgroundPosition = new Vector2((int)x, (int)y);
         }
 
-        public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList)
+        public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList, Vector2 shift)
         {
-            if(gameTime.TotalGameTime >= nextTextureTime)
+            if (Colision(screen, shift))
             {
-                nextTextureTime = gameTime.TotalGameTime + textureDuration;
-                currentTexture++;
-                if (currentTexture >= texture.Length)
+                if (gameTime.TotalGameTime >= nextTextureTime)
                 {
-                    currentTexture -= texture.Length;
-                }
+                    nextTextureTime = gameTime.TotalGameTime + textureDuration;
+                    currentTexture++;
+                    if (currentTexture >= texture.Length)
+                    {
+                        currentTexture -= texture.Length;
+                    }
 
-                //size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
+                    //size = new Vector2((float)texture[currentTexture].Width / Constants.TextureSize, (float)texture[currentTexture].Height / Constants.TextureSize);
+                }
             }
         }
 
