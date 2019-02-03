@@ -3,6 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Platformer.Core
 {
@@ -50,10 +51,10 @@ namespace Platformer.Core
             }
         }
 
-        public override void ActionOnTouch(MobileGameObject mobileElement, int side)
+        public override void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
         {
-            base.ActionOnTouch(mobileElement, side);
-            mobileElement.Die();
+            base.ActionOnTouch(mobileElement, side, map);
+            mobileElement.Die(map);
         }
     }
 }

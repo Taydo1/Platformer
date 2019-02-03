@@ -111,14 +111,14 @@ namespace Platformer.Core
                 {
                     for (int j = 0; j < sideBlocks[i].Count; j++)
                     {
-                        sideBlocks[i][j].ActionOnTouch(this, i);
+                        sideBlocks[i][j].ActionOnTouch(this, i, map);
                     }
                 }
 
             }
             if (position.Y > Game1.mapSize.Y)
             {
-                Die();
+                Die(map);
             }
         }
 
@@ -154,9 +154,10 @@ namespace Platformer.Core
             forces.Add(force);
         }
 
-        public virtual void Die()
+        public virtual void Die(List<GameObject> map)
         {
             isAlive = false;
+            map.Remove(this);
         }
 
         private void StopOnCollision()

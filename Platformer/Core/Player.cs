@@ -107,7 +107,17 @@ namespace Platformer.Core
             if ((keyState.IsKeyDown(Keys.Space) || padState.Buttons.RightShoulder == ButtonState.Pressed)
                 && gameTime.TotalGameTime > nextShotTime)
             {
-                Shot shot = new Shot(Left, CenterVert, textureDirection);
+
+                Shot shot = null;
+                switch (textureDirection)
+                {
+                    case -1:
+                        shot = new Shot(Left, CenterVert, textureDirection);
+                        break;
+                    case 1:
+                        shot = new Shot(Right, CenterVert, textureDirection);
+                        break;
+                }
                 shot.Texture = new[] { shotTexture };
                 map.Add(shot);
 
@@ -115,9 +125,9 @@ namespace Platformer.Core
             }
         }
 
-        public override void Die()
+        public override void Die(List<GameObject> map)
         {
-            base.Die();
+            base.Die(map);
             CenterHori = lastCheckpoint.X + size.X/2;
             CenterVert = lastCheckpoint.Y + 0.99f - size.Y/2;
             speed = Vector2.Zero;

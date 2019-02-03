@@ -139,8 +139,8 @@ namespace Platformer
             // TODO: Add your update logic here
 
             KeyboardState state = Keyboard.GetState();
-            player.DetectMove(state, GamePad.GetState(PlayerIndex.One), map, gameTime, shotTexture);
             player.Update(gameTime, map, shift);
+            player.DetectMove(state, GamePad.GetState(PlayerIndex.One), map, gameTime, shotTexture);
             player.UpdateShift(ref shift);
 
             //Console.WriteLine(player.IsAlive);

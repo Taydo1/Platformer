@@ -21,7 +21,7 @@ namespace Platformer.Core
         public const float initialPlayerJump = -7.9f;
 
         public const float initialShotAcceleration = 1e5f;
-        public const float shotSpeed = 2 * maxPlayerSpeed;
+        public const float shotSpeed = 4 * maxPlayerSpeed;
 
     }
 }

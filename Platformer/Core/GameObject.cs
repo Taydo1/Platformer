@@ -75,7 +75,7 @@ namespace Platformer.Core
             Game1.DrawLine(spriteBatch, (BottomLeft + shift) * Constants.TileSize, (TopLeft + shift) * Constants.TileSize);*/
         }
 
-        public virtual void ActionOnTouch(MobileGameObject mobileElement, int side)
+        public virtual void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
         {
         }
 

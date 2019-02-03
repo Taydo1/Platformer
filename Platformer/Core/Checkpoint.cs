@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace Platformer.Core
 {
@@ -10,9 +11,9 @@ namespace Platformer.Core
             position.Y -= 1;
         }
 
-        public override void ActionOnTouch(MobileGameObject mobileElement, int side)
+        public override void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
         {
-            base.ActionOnTouch(mobileElement, side);
+            base.ActionOnTouch(mobileElement, side, map);
             if (mobileElement is Player player)
             {
                 player.Checkpoint = new Vector2(Left, Bottom - 1);

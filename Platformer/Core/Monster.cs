@@ -35,10 +35,18 @@ namespace Platformer.Core
             }
         }
 
-        public override void ActionOnTouch(MobileGameObject mobileElement, int side)
+        public override void Die(List<GameObject> map)
         {
-            base.ActionOnTouch(mobileElement, side);
-            mobileElement.Die();
+            base.Die(map);
+        }
+
+        public override void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
+        {
+            base.ActionOnTouch(mobileElement, side, map);
+            if(mobileElement is Player player)
+            {
+                player.Die(map);
+            }
         }
 
         public override Texture2D[] Texture

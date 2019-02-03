@@ -1,4 +1,6 @@
-﻿namespace Platformer.Core
+﻿using System.Collections.Generic;
+
+namespace Platformer.Core
 {
     class Ice : Block
     {
@@ -8,7 +10,7 @@
 
         }
 
-        public override void ActionOnTouch(MobileGameObject mobileElement, int side)
+        public override void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
         {
             if (side == 1)
             {
