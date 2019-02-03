@@ -171,6 +171,11 @@ namespace Platformer.Core
             System.Console.WriteLine(text);
         }
 
+        public bool Contain(Vector2 point)
+        {
+            return (Left < point.X && point.X < Right && Top < point.Y && point.Y < Bottom);
+        }
+
         public static void UpdateScreen()
         {
             screen = new GameObject(0, 0, false, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);

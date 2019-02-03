@@ -25,10 +25,11 @@ namespace Platformer.Core
             lastCheckpoint = new Vector2(x, y);
         }
 
-        public override void Update(GameTime gameTime, List<GameObject> solidObjectList)
+        public override void Update(GameTime gameTime, List<GameObject> map)
         {
-            base.Update(gameTime, solidObjectList);
+            base.Update(gameTime, map);
             //Print("side :" + collideSides);
+            //Print("sideBlock : "+sideBlocks[0].Count + " " + sideBlocks[1].Count + " " + sideBlocks[2].Count + " " + sideBlocks[3].Count + " " + sideBlocks[4].Count);
             //Print("acceleration :" + acceleration.ToString());
             //Print("speed :" + speed.ToString());
             //Print("position :" + position.ToString());
@@ -58,9 +59,10 @@ namespace Platformer.Core
 
         public void DetectMove(KeyboardState keyState, GamePadState padState, List<GameObject> map, GameTime gameTime, Texture2D shotTexture)
         {
-            if (padState.ThumbSticks.Left.X !=0)
+            if (padState.ThumbSticks.Left.X != 0)
             {
-                direction = padState.ThumbSticks.Left.X;
+                direction = (float)Math.Pow(padState.ThumbSticks.Left.X, 7);
+                textureDirection = Math.Sign(direction);
             }
             else if (keyState.IsKeyDown(Keys.Left) == keyState.IsKeyDown(Keys.Right))
             {
@@ -85,7 +87,7 @@ namespace Platformer.Core
             {
                 speed.Y = Constants.initialPlayerJump;
             }
-            if (keyState.IsKeyDown(Keys.Down))
+            if (keyState.IsKeyDown(Keys.Down) || padState.Buttons.B == ButtonState.Pressed)
             {
                 if (speed.Y < 0)
                 {
@@ -93,7 +95,7 @@ namespace Platformer.Core
                 }
             }
 
-            if (keyState.IsKeyDown(Keys.LeftControl) || padState.Buttons.RightShoulder == ButtonState.Pressed)
+            if (keyState.IsKeyDown(Keys.LeftControl) || padState.Buttons.LeftShoulder == ButtonState.Pressed)
             {
                 if (speed.Y > 0 && ((collideSides & 1) != 0 || (collideSides & 4) != 0))
                 {
@@ -102,7 +104,8 @@ namespace Platformer.Core
             }
 
 
-            if ((keyState.IsKeyDown(Keys.Space) || padState.Buttons.B == ButtonState.Pressed) && gameTime.TotalGameTime > nextShotTime)
+            if ((keyState.IsKeyDown(Keys.Space) || padState.Buttons.RightShoulder == ButtonState.Pressed)
+                && gameTime.TotalGameTime > nextShotTime)
             {
                 Shot shot = new Shot(Left, CenterVert, textureDirection);
                 shot.Texture = new[] { shotTexture };
@@ -115,9 +118,13 @@ namespace Platformer.Core
         public override void Die()
         {
             base.Die();
-            CenterHori = lastCheckpoint.X + 0.5f;
-            CenterVert = lastCheckpoint.Y + 0.5f;
+            CenterHori = lastCheckpoint.X + size.X/2;
+            CenterVert = lastCheckpoint.Y + 0.99f - size.Y/2;
             speed = Vector2.Zero;
+        }
+
+        public Vector2 Checkpoint {
+            set => lastCheckpoint = new Vector2(value.X, value.Y);
         }
 
         public static void UpdateScrollBoxes()
@@ -125,5 +132,6 @@ namespace Platformer.Core
             scrollBoxTopLeft = new Vector2(Constants.WindowHoriTileNum / 2 - 1f, Constants.WindowVertTileNum / 2);
             scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);
         }
+        
     }
 }

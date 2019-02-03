@@ -17,7 +17,7 @@ namespace Platformer.Core
 
         public override Texture2D[] Texture
         {
-            get => Texture;
+            get => base.Texture;
             set
             {
                 base.Texture = value;

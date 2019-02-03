@@ -26,6 +26,8 @@ namespace Platformer
         Texture2D iceTexture;
         Texture2D spikeTexture;
         Texture2D shotTexture;
+        Texture2D checkpointTexture;
+        Texture2D monsterTexture;
         static Texture2D lineTexture;
 
         Vector2 mapSize = Vector2.Zero;
@@ -91,6 +93,8 @@ namespace Platformer
             iceTexture = Content.Load<Texture2D>("images/ice");
             spikeTexture = Content.Load<Texture2D>("images/spike");
             shotTexture = Content.Load<Texture2D>("images/shot");
+            checkpointTexture = Content.Load<Texture2D>("images/checkpoint");
+            monsterTexture = Content.Load<Texture2D>("images/monster0");
 
             player.Texture = playerTexture;
             for (int i = 0; i < map.Count; i++)
@@ -101,6 +105,8 @@ namespace Platformer
                 else if(map[i] is Block) { map[i].Texture = new[] { blockTexture }; }
                 else if(map[i] is Shot) { map[i].Texture = new[] { iceTexture }; }
                 else if(map[i] is Sky) { map[i].Texture = new[] { skyTexture }; }
+                else if(map[i] is Checkpoint) { map[i].Texture = new[] { checkpointTexture }; }
+                else if(map[i] is Monster) { map[i].Texture = new[] { monsterTexture }; }
 
                 if (map[i].NeedBackground)
                 {
@@ -167,7 +173,11 @@ namespace Platformer
             spriteBatch.Begin();
             for(int i = 0; i < map.Count; i++)
             {
-                map[i].Draw(spriteBatch, shift);
+                if(!(map[i] is MobileGameObject))map[i].Draw(spriteBatch, shift);
+            }
+            for(int i = 0; i < map.Count; i++)
+            {
+                if((map[i] is MobileGameObject))map[i].Draw(spriteBatch, shift);
             }
             player.Draw(spriteBatch, shift);
             spriteBatch.End();
@@ -248,14 +258,21 @@ namespace Platformer
                         case 3:
                             map.Add(new Ice(j, i));
                             break;
+                        case 10:
+                            map.Add(new Checkpoint(j, i));
+                            break;
                         case 100:
                         case 101:
                         case 102:
                         case 103:
                             map.Add(new Spike(j, i,tile-100));
                             break;
+                        case 200:
+                            map.Add(new Monster(j + 0.0001f, i));
+                            map.Add(new Sky(j, i));
+                            break;
                     }
-                    System.Console.Write(tile + "  ");
+                    System.Console.Write(CompleteNumber(tile, 3) + "  ");
                 }
 
                 mapSize.X = Math.Max(mapSize.X, levelTemp[i].Length);

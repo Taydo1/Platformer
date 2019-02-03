@@ -42,7 +42,7 @@ namespace Platformer.Core
             currentHorizontalAcceleration = defaultHorizontalAcceleration;
             maxHorizontalSpeed = objectMaxHorizontalSpeed;
 
-            sideBlocks = new List<GameObject>[4];
+            sideBlocks = new List<GameObject>[5];
             for(int i = 0; i < sideBlocks.Length; i++)
             {
                 sideBlocks[i] = new List<GameObject>();
@@ -89,25 +89,46 @@ namespace Platformer.Core
             
             StopOnCollision();
 
-            Move(speed * (float)gameTime.ElapsedGameTime.TotalSeconds, map);
+            Vector2 movement = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Move(movement, map);
 
-            if(position.Y > Constants.WindowVertTileNum)
+            for (int i = 0; i < map.Count; i++)
+            {
+                if (map[i] is Checkpoint checkpoint && checkpoint.Contain(Center))
+                {
+                    sideBlocks[4].Add(checkpoint);
+                }
+                else if (map[i].IsSolid && DistanceCarre(map[i]) < Math.Pow(movement.Length() + DiagonalLength + map[i].DiagonalLength, 2))
+                {
+                    DetectCollideSide(map[i]);
+                }
+            }
+
+            for (int i = 0; i < sideBlocks.Length; i++)
+            {
+                for (int j = 0; j < sideBlocks[i].Count; j++)
+                {
+                    sideBlocks[i][j].ActionOnTouch(this, i);
+                }
+            }
+
+            if (position.Y > Constants.WindowVertTileNum)
             {
                 Die();
             }
         }
 
-        protected void Move(Vector2 movement, List<GameObject> solidObjectList)
+        protected void Move(Vector2 movement, List<GameObject> map)
         {
             float maxMultUntilCollision = 1f,
                 nouveauMult,
                 movementLength = movement.Length();
 
-            for (int i = 0; i < solidObjectList.Count; i++)
+            for (int i = 0; i < map.Count; i++)
             {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(movementLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
+                if (map[i].IsSolid && DistanceCarre(map[i]) < Math.Pow(movementLength + DiagonalLength + map[i].DiagonalLength, 2))
                 {
-                    nouveauMult = MultUntilCollision(solidObjectList[i], movement);
+                    nouveauMult = MultUntilCollision(map[i], movement);
                     maxMultUntilCollision = Math.Min(maxMultUntilCollision, nouveauMult);
                 }
             }
@@ -122,23 +143,6 @@ namespace Platformer.Core
                 sideBlocks[i].Clear();
             }
             //Console.WriteLine();
-
-
-            for (int i = 0; i < solidObjectList.Count; i++)
-            {
-                if (solidObjectList[i].IsSolid && DistanceCarre(solidObjectList[i]) < Math.Pow(movementLength + DiagonalLength + solidObjectList[i].DiagonalLength, 2))
-                {
-                    DetectCollideSide(solidObjectList[i]);
-                }
-            }
-
-            for(int i = 0; i < sideBlocks.Length; i++)
-            {
-                for(int j = 0; j < sideBlocks[i].Count; j++)
-                {
-                    sideBlocks[i][j].ActionOnTouch(this, i);
-                }
-            }
         }
 
         protected void AddForce(Vector2 force)

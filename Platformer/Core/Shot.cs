@@ -6,6 +6,7 @@
             base(x, y, 0, false, false, 30, Constants.initialShotAcceleration, Constants.shotSpeed)
         {
             direction = shotDirection;
+            textureDirection = shotDirection;
         }
     }
 }
