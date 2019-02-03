@@ -101,6 +101,11 @@ namespace Platformer
                 else if(map[i] is Block) { map[i].Texture = new[] { blockTexture }; }
                 else if(map[i] is Shot) { map[i].Texture = new[] { iceTexture }; }
                 else if(map[i] is Sky) { map[i].Texture = new[] { skyTexture }; }
+
+                if (map[i].NeedBackground)
+                {
+                    map[i].BackgroundTexture = skyTexture;
+                }
             }
 
 
@@ -132,7 +137,7 @@ namespace Platformer
             player.Update(gameTime, map);
             player.UpdateShift(ref shift);
 
-            Console.WriteLine(player.IsAlive);
+            //Console.WriteLine(player.IsAlive);
 
 
             if (shift.Y < Constants.WindowVertTileNum - mapSize.Y)
@@ -235,7 +240,7 @@ namespace Platformer
                             map.Add(new Sky(j, i));
                             break;
                         case 1:
-                            map.Add(new Block(j, i));
+                            map.Add(new Block(j, i, false));
                             break;
                         case 2:
                             map.Add(new Trampoline(j, i));

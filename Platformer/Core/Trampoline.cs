@@ -1,9 +1,11 @@
-﻿namespace Platformer.Core
+﻿using Microsoft.Xna.Framework.Graphics;
+
+namespace Platformer.Core
 {
     class Trampoline : Block
     {
         public Trampoline(float x, float y) :
-            base(x, y+0.5f)
+            base(x, y+0.5f, true)
         {
 
         }

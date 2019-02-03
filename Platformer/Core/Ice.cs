@@ -3,7 +3,7 @@
     class Ice : Block
     {
         public Ice(float x, float y) :
-            base(x, y)
+            base(x, y, false)
         {
 
         }

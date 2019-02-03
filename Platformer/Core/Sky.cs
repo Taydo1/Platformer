@@ -3,7 +3,7 @@
     class Sky : GameObject
     {
         public Sky(float x, float y) :
-            base(x, y, false, 0)
+            base(x, y, false, int.MaxValue, false)
         {
 
         }

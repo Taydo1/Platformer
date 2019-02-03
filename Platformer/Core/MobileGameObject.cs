@@ -27,7 +27,7 @@ namespace Platformer.Core
         protected bool applyGravity;
 
         public MobileGameObject(float x, float y, float objectMass, bool applyGravityState, bool isObjectSolid, int objectTextureDuration, float objectDefaultHorizontalAcceleration, float objectMaxHorizontalSpeed) :
-            base(x, y, isObjectSolid, objectTextureDuration)
+            base(x, y, isObjectSolid, objectTextureDuration, false)
         {
             collideSides = 0;
 
@@ -53,11 +53,11 @@ namespace Platformer.Core
         {
             if(textureDirection == 1)
             {
-                drawDiretionTexture = SpriteEffects.None;
+                drawDirectionTexture = SpriteEffects.None;
             }
             else if(textureDirection == -1)
             {
-                drawDiretionTexture = SpriteEffects.FlipHorizontally;
+                drawDirectionTexture = SpriteEffects.FlipHorizontally;
             }
 
             base.Update(gameTime, map);

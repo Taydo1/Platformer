@@ -15,13 +15,17 @@ namespace Platformer.Core
         protected TimeSpan nextTextureTime;
         protected TimeSpan textureDuration;
         protected bool isSolid;
-        protected SpriteEffects drawDiretionTexture;
+        protected SpriteEffects drawDirectionTexture;
         protected float rotationAngle;
 
-        private static GameObject screen = new GameObject(0, 0, false, 0, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
+        protected bool needBackground;
+        protected Texture2D backgroundTexture;
+        protected Vector2 backgroundPosition;
+
+        private static GameObject screen = new GameObject(0, 0, false, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
 
 
-        public GameObject(float x, float y, bool isObjectSolid, int objectTextureDuration, float width = 0, float height = 0)
+        public GameObject(float x, float y, bool isObjectSolid, int objectTextureDuration, bool objectNeedBackground, float width = 0, float height = 0)
         {
             position = new Vector2(x, y);
             isSolid = isObjectSolid;
@@ -30,8 +34,12 @@ namespace Platformer.Core
             currentTexture = 0;
             nextTextureTime = new TimeSpan(0);
             textureDuration = new TimeSpan(0, 0, 0, 0, objectTextureDuration);
-            drawDiretionTexture = SpriteEffects.None;
+            drawDirectionTexture = SpriteEffects.None;
             rotationAngle = 0;
+
+            backgroundTexture = null;
+            needBackground = objectNeedBackground;
+            backgroundPosition = new Vector2((int)x, (int)y);
         }
 
         public virtual void Update(GameTime gameTime, List<GameObject> solidObjectList)
@@ -52,7 +60,11 @@ namespace Platformer.Core
         public void Draw(SpriteBatch spriteBatch, Vector2 shift)
         {
             if (Colision(screen, shift)) {
-                spriteBatch.Draw(texture[currentTexture], (Center + shift) * Constants.TileSize, null, Color.White, rotationAngle, new Vector2(texture[currentTexture].Width, texture[currentTexture].Height) / 2, (float)Constants.TileSize / Constants.TextureSize, drawDiretionTexture, 0);
+                if(backgroundTexture != null)
+                {
+                    spriteBatch.Draw(backgroundTexture, (backgroundPosition +shift)* Constants.TileSize, null, Color.White, 0, Vector2.Zero, (float)Constants.TileSize / Constants.TextureSize, drawDirectionTexture, 0);
+                }
+                spriteBatch.Draw(texture[currentTexture], (Center + shift) * Constants.TileSize, null, Color.White, rotationAngle, new Vector2(texture[currentTexture].Width, texture[currentTexture].Height) / 2, (float)Constants.TileSize / Constants.TextureSize, drawDirectionTexture, 0);
             }
             /*Game1.DrawLine(spriteBatch, (TopLeft + shift) * Constants.TileSize, (TopRight + shift) * Constants.TileSize);
             Game1.DrawLine(spriteBatch, (TopRight + shift) * Constants.TileSize, (BottomRight + shift) * Constants.TileSize);
@@ -151,6 +163,8 @@ namespace Platformer.Core
         public bool IsSolid {
             get => isSolid;
         }
+        public bool NeedBackground { get => needBackground;}
+        public Texture2D BackgroundTexture { get => backgroundTexture; set => backgroundTexture = value; }
 
         protected void Print(string text)
         {
@@ -159,7 +173,7 @@ namespace Platformer.Core
 
         public static void UpdateScreen()
         {
-            screen = new GameObject(0, 0, false, 0, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
+            screen = new GameObject(0, 0, false, 0, false, Constants.WindowHoriTileNum, Constants.WindowVertTileNum);
         }
     }
 }
