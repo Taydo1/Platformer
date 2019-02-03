@@ -93,7 +93,7 @@ namespace Platformer.Core
 
             if(position.Y > Constants.WindowVertTileNum)
             {
-                isAlive = false;
+                Die();
             }
         }
 
@@ -144,6 +144,11 @@ namespace Platformer.Core
         protected void AddForce(Vector2 force)
         {
             forces.Add(force);
+        }
+
+        public virtual void Die()
+        {
+            isAlive = false;
         }
 
         private void StopOnCollision()
@@ -299,6 +304,6 @@ namespace Platformer.Core
         public float SpeedY { get => speed.Y; set => speed.Y = value; }
         public float DefaultHorizontalAcceleration { get => defaultHorizontalAcceleration; }
         public float CurrentHorizontalAcceleration { get => currentHorizontalAcceleration; set => currentHorizontalAcceleration = value; }
-        public bool IsAlive { get => isAlive; set => isAlive = value; }
+        public bool IsAlive { get => isAlive;}
     }
 }

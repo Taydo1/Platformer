@@ -45,7 +45,7 @@ namespace Platformer.Core
         public override void ActionOnTouch(MobileGameObject mobileElement, int side)
         {
             base.ActionOnTouch(mobileElement, side);
-            mobileElement.IsAlive = false;
+            mobileElement.Die();
         }
     }
 }

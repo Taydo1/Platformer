@@ -12,6 +12,8 @@ namespace Platformer.Core
         private static Vector2 scrollBoxTopLeft = new Vector2(Constants.WindowHoriTileNum / 2 - 1f, Constants.WindowVertTileNum / 2);
         private static Vector2 scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);
 
+        private Vector2 lastCheckpoint;
+
         private TimeSpan nextShotTime;
         private TimeSpan rechargingDuration;
 
@@ -20,6 +22,7 @@ namespace Platformer.Core
         {
             nextShotTime = new TimeSpan(0);
             rechargingDuration = new TimeSpan(0, 0, 0, 0, 500);
+            lastCheckpoint = new Vector2(x, y);
         }
 
         public override void Update(GameTime gameTime, List<GameObject> solidObjectList)
@@ -107,6 +110,14 @@ namespace Platformer.Core
 
                 nextShotTime = gameTime.TotalGameTime + rechargingDuration;
             }
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            CenterHori = lastCheckpoint.X + 0.5f;
+            CenterVert = lastCheckpoint.Y + 0.5f;
+            speed = Vector2.Zero;
         }
 
         public static void UpdateScrollBoxes()
