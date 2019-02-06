@@ -13,7 +13,6 @@ namespace Platformer.Core
         private static Vector2 scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);
 
         private Vector2 lastCheckpoint;
-
         private TimeSpan nextShotTime;
         private TimeSpan rechargingDuration;
 
@@ -23,6 +22,7 @@ namespace Platformer.Core
             nextShotTime = new TimeSpan(0);
             rechargingDuration = new TimeSpan(0, 0, 0, 0, 500);
             lastCheckpoint = new Vector2(x, y);
+            Win = false;
         }
 
         public override void Update(GameTime gameTime, List<GameObject> map, Vector2 shift)
@@ -59,6 +59,14 @@ namespace Platformer.Core
 
         public void DetectMove(KeyboardState keyState, GamePadState padState, List<GameObject> map, GameTime gameTime, Texture2D shotTexture)
         {
+            if (Win)
+            {
+                if((collideSides & 2) != 0) speed.Y = Constants.initialPlayerJump/3;
+                speed.X = 0;
+                direction = 0;
+                return;
+            }
+
             if (padState.ThumbSticks.Left.X != 0)
             {
                 direction = (float)Math.Pow(padState.ThumbSticks.Left.X, 7);
@@ -112,10 +120,10 @@ namespace Platformer.Core
                 switch (textureDirection)
                 {
                     case -1:
-                        shot = new Shot(Left, CenterVert, textureDirection);
+                        shot = new Shot(CenterHori, CenterVert, textureDirection);
                         break;
                     case 1:
-                        shot = new Shot(Right, CenterVert, textureDirection);
+                        shot = new Shot(CenterHori, CenterVert, textureDirection);
                         break;
                 }
                 shot.Texture = new[] { shotTexture };
@@ -142,6 +150,8 @@ namespace Platformer.Core
             scrollBoxTopLeft = new Vector2(Constants.WindowHoriTileNum / 2 - 1f, Constants.WindowVertTileNum / 2);
             scrollBoxBottomRight = new Vector2(Constants.WindowHoriTileNum / 2 + 1f, Constants.WindowVertTileNum / 2 + 2.5f);
         }
-        
+
+        public bool Win { get; set; }
+
     }
 }

@@ -45,6 +45,7 @@
     <Compile Include="Core\Bloc.cs" />
     <Compile Include="Core\Checkpoint.cs" />
     <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\Flag.cs" />
     <Compile Include="Core\GameObject.cs" />
     <Compile Include="Core\Ice.cs" />
     <Compile Include="Core\MobileGameObject.cs" />

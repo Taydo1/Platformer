@@ -6,7 +6,7 @@ namespace Platformer.Core
     class Shot : MobileGameObject
     {
         public Shot(float x, float y, int shotDirection) :
-            base(x, y, 0, false, true, 30, Constants.initialShotAcceleration, Constants.shotSpeed)
+            base(x, y, 0, false, false, 30, Constants.initialShotAcceleration, Constants.shotSpeed)
         {
             direction = shotDirection;
             textureDirection = shotDirection;
@@ -41,8 +41,10 @@ namespace Platformer.Core
         public override void ActionOnTouch(MobileGameObject mobileElement, int side, List<GameObject> map)
         {
             base.ActionOnTouch(mobileElement, side, map);
-            Print("ls;mlzm");
-            mobileElement.Die(map);
+            if (!(mobileElement is Player))
+            {
+                mobileElement.Die(map);
+            }
         }
     }
 }

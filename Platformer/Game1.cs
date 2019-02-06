@@ -26,6 +26,7 @@ namespace Platformer
         Texture2D iceTexture;
         Texture2D spikeTexture;
         Texture2D shotTexture;
+        Texture2D flagTexture;
         Texture2D checkpointTexture;
         Texture2D monsterTexture;
         static Texture2D lineTexture;
@@ -47,6 +48,7 @@ namespace Platformer
 
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new EventHandler<EventArgs>(this.ResizeWindow);
+            Window.Title = "Boing-Boing";
 
             /*graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -93,6 +95,7 @@ namespace Platformer
             iceTexture = Content.Load<Texture2D>("images/ice");
             spikeTexture = Content.Load<Texture2D>("images/spike");
             shotTexture = Content.Load<Texture2D>("images/shot");
+            flagTexture = Content.Load<Texture2D>("images/flag");
             checkpointTexture = Content.Load<Texture2D>("images/checkpoint");
             monsterTexture = Content.Load<Texture2D>("images/monster0");
 
@@ -105,6 +108,7 @@ namespace Platformer
                 else if(map[i] is Block) { map[i].Texture = new[] { blockTexture }; }
                 else if(map[i] is Shot) { map[i].Texture = new[] { iceTexture }; }
                 else if(map[i] is Sky) { map[i].Texture = new[] { skyTexture }; }
+                else if(map[i] is Flag) { map[i].Texture = new[] { flagTexture }; }
                 else if(map[i] is Checkpoint) { map[i].Texture = new[] { checkpointTexture }; }
                 else if(map[i] is Monster) { map[i].Texture = new[] { monsterTexture }; }
 
@@ -155,6 +159,7 @@ namespace Platformer
             {
                 map[i].Update(gameTime, map, shift);
             }
+
 
             previousState = state;
 
@@ -260,6 +265,9 @@ namespace Platformer
                             break;
                         case 10:
                             map.Add(new Checkpoint(j, i));
+                            break;
+                        case 11:
+                            map.Add(new Flag(j, i));
                             break;
                         case 100:
                         case 101:
